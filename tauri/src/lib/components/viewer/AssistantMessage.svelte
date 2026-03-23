@@ -1,0 +1,92 @@
+<script lang="ts">
+	import type { MessageRow } from '$lib/types/db';
+	import Markdown from './Markdown.svelte';
+	import ToolUseBlock from './ToolUseBlock.svelte';
+
+	interface ContentBlock {
+		type: string;
+		text?: string;
+		thinking?: string;
+		name?: string;
+		input?: Record<string, unknown>;
+		id?: string;
+	}
+
+	let { message }: { message: MessageRow } = $props();
+	let showThinking = $state(false);
+
+	let blocks: ContentBlock[] = $derived.by(() => {
+		if (!message.content_json) return [];
+		try {
+			return JSON.parse(message.content_json);
+		} catch {
+			return [];
+		}
+	});
+
+	let thinkingBlocks = $derived(blocks.filter((b) => b.type === 'thinking' && b.thinking));
+	let textBlocks = $derived(blocks.filter((b) => b.type === 'text' && b.text));
+	let toolBlocks = $derived(blocks.filter((b) => b.type === 'tool_use'));
+	let hasBlocks = $derived(textBlocks.length > 0 || toolBlocks.length > 0);
+
+	function shortModel(model: string | null): string {
+		if (!model) return '';
+		return model.replace('claude-', '').split('-').slice(0, 2).join('-');
+	}
+</script>
+
+<div class="flex justify-start">
+	<div class="max-w-[85%] space-y-2">
+		{#if thinkingBlocks.length > 0}
+			<div>
+				<button
+					onclick={() => (showThinking = !showThinking)}
+					class="text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+				>
+					{showThinking ? '▼' : '▶'} Thinking...
+				</button>
+				{#if showThinking}
+					<div class="mt-1 p-3 rounded-md bg-muted/50 border text-xs text-muted-foreground whitespace-pre-wrap max-h-96 overflow-auto">
+						{#each thinkingBlocks as b}
+							<span>{b.thinking}</span>
+						{/each}
+					</div>
+				{/if}
+			</div>
+		{/if}
+
+		{#if hasBlocks}
+			{#each textBlocks as block}
+				<div class="bg-card border rounded-2xl rounded-bl-md px-4 py-3">
+					<Markdown content={block.text || ''} />
+				</div>
+			{/each}
+		{:else if message.content_text}
+			<div class="bg-card border rounded-2xl rounded-bl-md px-4 py-3">
+				<p class="text-sm whitespace-pre-wrap">{message.content_text}</p>
+			</div>
+		{/if}
+
+		{#each toolBlocks as block}
+			<ToolUseBlock {block} />
+		{/each}
+
+		<div class="flex items-center gap-2 px-1">
+			{#if message.model}
+				<span class="inline-flex items-center rounded-full border px-2 py-0 text-[9px] font-normal text-muted-foreground">
+					{shortModel(message.model)}
+				</span>
+			{/if}
+			{#if message.input_tokens > 0 || message.output_tokens > 0}
+				<span class="text-[10px] text-muted-foreground">
+					{message.input_tokens + message.output_tokens} tokens
+				</span>
+			{/if}
+			{#if message.timestamp}
+				<span class="text-[10px] text-muted-foreground">
+					{new Date(message.timestamp).toLocaleTimeString()}
+				</span>
+			{/if}
+		</div>
+	</div>
+</div>
