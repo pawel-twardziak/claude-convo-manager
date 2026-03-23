@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-import { readFileSync, writeFileSync, execSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { execSync } from 'node:child_process';
 
 const version = process.argv[2];
 
