@@ -23,7 +23,7 @@ A desktop application for indexing, searching, and analyzing your [Claude Code](
 
 ## Screenshots
 
-<!-- Add screenshots here -->
+![Dashboard](claude-convo-mngr.png)
 
 ## Prerequisites
 
@@ -174,13 +174,16 @@ This produces platform-specific installers in `src-tauri/target/release/bundle/`
 
 ## CI/CD
 
-The GitHub Actions workflow (`.github/workflows/build.yml`) builds and uploads artifacts for all platforms on every push to `main`:
+Two GitHub Actions workflows handle builds:
 
-- macOS (aarch64 + x86_64)
-- Ubuntu 22.04
-- Windows
+- **CI** (`.github/workflows/ci.yml`) — builds on every push to `main` and on PRs to verify the build succeeds
+- **Release** (`.github/workflows/release.yml`) — builds and creates a draft GitHub Release when a `v*` tag is pushed
 
-The workflow supports code signing for macOS and Windows, but signing is currently disabled (no certificates configured). Apps will show security warnings (Gatekeeper on macOS, SmartScreen on Windows). To enable signing, add the following secrets to the GitHub repository:
+Platforms: macOS (aarch64 + x86_64), Ubuntu 22.04, Windows.
+
+To create a release: `npm run release <version>` then `git push && git push origin v<version>`.
+
+Code signing for macOS and Windows is supported but currently disabled (no certificates configured). Apps will show security warnings (Gatekeeper on macOS, SmartScreen on Windows). To enable signing, add the following secrets to the GitHub repository:
 
 **macOS** (signing + notarization):
 

@@ -12,7 +12,8 @@
 </script>
 
 <aside class="w-56 shrink-0 border-r bg-card flex flex-col h-full">
-	<div class="p-4 border-b">
+	<div class="p-4 border-b flex items-center gap-2">
+		<img src="/app-icon.png" alt="App icon" class="w-6 h-6 rounded" />
 		<h1 class="font-semibold text-sm tracking-tight">Claude Conversations</h1>
 	</div>
 	<nav class="flex-1 p-2 space-y-0.5">
