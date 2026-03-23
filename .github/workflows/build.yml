@@ -92,7 +92,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: artifacts-${{ matrix.platform }}-${{ matrix.args }}
+          name: artifacts-${{ matrix.platform }}${{ matrix.args && format('-{0}', matrix.args) || '' }}
           path: |
             src-tauri/target/**/release/bundle/**/*.deb
             src-tauri/target/**/release/bundle/**/*.rpm
