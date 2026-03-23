@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2cdc69df-2052-4124-9669-b4b90e9e4b80" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.github/workflows/build.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/build.yml" afterDir="false" />
-    </list>
+    <list default="true" id="2cdc69df-2052-4124-9669-b4b90e9e4b80" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -57,6 +55,7 @@
     "git-widget-placeholder": "main",
     "javascript.preferred.runtime.type.id": "node",
     "junie.onboarding.icon.badge.shown": "true",
+    "last_opened_file_path": "/media/twapaw/ubuntu-data-1/0-Projekty/claude-convo-manager",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -81,7 +80,7 @@
       <option name="presentableId" value="Default" />
       <updated>1774281487513</updated>
       <workItem from="1774281488936" duration="7934000" />
-      <workItem from="1774293232569" duration="2402000" />
+      <workItem from="1774293232569" duration="3028000" />
     </task>
     <servers />
   </component>
