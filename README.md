@@ -4,18 +4,18 @@ A desktop application for indexing, searching, and analyzing your [Claude Code](
 
 ## Features
 
-- **Dashboard** — Overview of token usage, project breakdown, activity trends, and recent sessions
-- **Conversation Browser** — Browse and filter sessions by project, git branch, model, date range, and more
-- **Full-Text Search** — Search across all messages with FTS5 full-text indexing (Porter stemming + Unicode)
-- **Conversation Viewer** — Read conversations with Markdown rendering, syntax-highlighted code blocks, and tool-use display
-- **Token & Cost Tracking** — Tracks input, output, cache creation, and cache read tokens with estimated API costs
-- **Auto-Sync** — Reads and indexes conversations directly from `~/.claude/` with incremental updates
-- **Tagging & Favorites** — Organize sessions with custom tags, favorites, and notes
-- **Dark / Light Theme** — Follows system preference or manual toggle
+- **Dashboard** - Overview of token usage, project breakdown, activity trends, and recent sessions
+- **Conversation Browser** - Browse and filter sessions by project, git branch, model, date range, and more
+- **Full-Text Search** - Search across all messages with FTS5 full-text indexing (Porter stemming + Unicode)
+- **Conversation Viewer** - Read conversations with Markdown rendering, syntax-highlighted code blocks, and tool-use display
+- **Token & Cost Tracking** - Tracks input, output, cache creation, and cache read tokens with estimated API costs
+- **Auto-Sync** - Reads and indexes conversations directly from `~/.claude/` with incremental updates
+- **Tagging & Favorites** - Organize sessions with custom tags, favorites, and notes
+- **Dark / Light Theme** - Follows system preference or manual toggle
 
 ## Download
 
-[**Latest release**](../../releases/latest) — pre-built binaries for Linux, macOS, and Windows.
+[**Latest release**](../../releases/latest) - pre-built binaries for Linux, macOS, and Windows.
 
 ## Screenshots
 
@@ -33,9 +33,9 @@ A desktop application for indexing, searching, and analyzing your [Claude Code](
 sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
 ```
 
-**macOS** — Xcode Command Line Tools (`xcode-select --install`)
+**macOS** - Xcode Command Line Tools (`xcode-select --install`)
 
-**Windows** — [Visual Studio Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) with "Desktop development with C++"
+**Windows** - [Visual Studio Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) with "Desktop development with C++"
 
 ## Getting Started
 
@@ -68,23 +68,23 @@ The app will automatically discover and index your Claude Code conversations fro
 
 ### Frontend
 
-- **SvelteKit 2** + **Svelte 5** — Compiler-based reactive UI framework
-- **Tailwind CSS 4** — Utility-first styling
-- **bits-ui** — Headless accessible UI components
-- **layerchart** — Data visualization (dashboard charts)
-- **marked** + **highlight.js** — Markdown rendering with syntax highlighting
-- **lucide-svelte** — Icons
+- **SvelteKit 2** + **Svelte 5** - Compiler-based reactive UI framework
+- **Tailwind CSS 4** - Utility-first styling
+- **bits-ui** - Headless accessible UI components
+- **layerchart** - Data visualization (dashboard charts)
+- **marked** + **highlight.js** - Markdown rendering with syntax highlighting
+- **lucide-svelte** - Icons
 
 ### Backend
 
-- **Rust** — Core logic and data processing
-- **Tauri 2** — Lightweight desktop runtime bridging web frontend and Rust backend
-- **SQLite** (via rusqlite) — Local database with WAL mode
-- **FTS5** — Full-text search with Porter stemming
-- **r2d2** — Connection pooling (8 connections)
-- **notify** — File system watching for live sync
-- **tokio** — Async runtime
-- **serde** — Serialization/deserialization
+- **Rust** - Core logic and data processing
+- **Tauri 2** - Lightweight desktop runtime bridging web frontend and Rust backend
+- **SQLite** (via rusqlite) - Local database with WAL mode
+- **FTS5** - Full-text search with Porter stemming
+- **r2d2** - Connection pooling (8 connections)
+- **notify** - File system watching for live sync
+- **tokio** - Async runtime
+- **serde** - Serialization/deserialization
 
 ## Project Structure
 
@@ -132,10 +132,10 @@ claude-convo-manager/
 
 ## How It Works
 
-1. **Sync** — The app reads `~/.claude/history.jsonl` and `~/.claude/projects/*/` to discover conversation sessions. Each session's JSONL file is parsed and indexed into a local SQLite database.
-2. **Index** — Messages are stored with full metadata (tokens, model, git branch, working directory, tool usage) and indexed using SQLite FTS5 for fast full-text search.
-3. **Browse** — The frontend queries the Rust backend via Tauri IPC commands with filtering, pagination, and sorting.
-4. **Analyze** — Dashboard aggregates token usage, project breakdowns, and activity patterns from the indexed data.
+1. **Sync** - The app reads `~/.claude/history.jsonl` and `~/.claude/projects/*/` to discover conversation sessions. Each session's JSONL file is parsed and indexed into a local SQLite database.
+2. **Index** - Messages are stored with full metadata (tokens, model, git branch, working directory, tool usage) and indexed using SQLite FTS5 for fast full-text search.
+3. **Browse** - The frontend queries the Rust backend via Tauri IPC commands with filtering, pagination, and sorting.
+4. **Analyze** - Dashboard aggregates token usage, project breakdowns, and activity patterns from the indexed data.
 
 ## Data Storage
 
@@ -155,11 +155,11 @@ npm run tauri build
 
 This produces platform-specific installers in `src-tauri/target/release/bundle/`:
 
-- **Linux** — `.deb`, `.rpm`, `.AppImage`
-- **macOS** — `.dmg`, `.app` (both aarch64 and x86_64)
-- **Windows** — `.exe`, `.msi`
+- **Linux** - `.deb`, `.rpm`, `.AppImage`
+- **macOS** - `.dmg`, `.app` (both aarch64 and x86_64)
+- **Windows** - `.exe`, `.msi`
 
-> **Note (Linux):** All Linux formats — including `.AppImage` — require `libwebkit2gtk-4.1` on the host system. Most GNOME-based distros (Ubuntu, Fedora) ship it by default; KDE-based distros (Kubuntu, KDE Neon) may not. Install it with:
+> **Note (Linux):** All Linux formats - including `.AppImage` - require `libwebkit2gtk-4.1` on the host system. Most GNOME-based distros (Ubuntu, Fedora) ship it by default; KDE-based distros (Kubuntu, KDE Neon) may not. Install it with:
 >
 > ```bash
 > # Debian/Ubuntu
