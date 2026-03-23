@@ -5,6 +5,8 @@ on:
   push:
     branches:
       - main
+    tags:
+      - 'v*'
 
 jobs:
   build-tauri:
@@ -79,6 +81,10 @@ jobs:
           APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         with:
+          tagName: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
+          releaseName: ${{ github.ref_type == 'tag' && format('Claude Conversations {0}', github.ref_name) || '' }}
+          releaseBody: 'See the assets below to download and install.'
+          releaseDraft: true
           args: ${{ matrix.args }}
 
       - name: Build Tauri (without code signing)
@@ -87,6 +93,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          tagName: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
+          releaseName: ${{ github.ref_type == 'tag' && format('Claude Conversations {0}', github.ref_name) || '' }}
+          releaseBody: 'See the assets below to download and install.'
+          releaseDraft: true
           args: ${{ matrix.args }}
 
       - name: Upload artifacts

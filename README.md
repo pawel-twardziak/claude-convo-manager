@@ -13,6 +13,10 @@ A desktop application for indexing, searching, and analyzing your [Claude Code](
 - **Tagging & Favorites** — Organize sessions with custom tags, favorites, and notes
 - **Dark / Light Theme** — Follows system preference or manual toggle
 
+## Download
+
+[**Latest release**](../../releases/latest) — pre-built binaries for Linux, macOS, and Windows.
+
 ## Screenshots
 
 <!-- Add screenshots here -->
@@ -203,4 +207,4 @@ The workflow supports code signing for macOS and Windows, but signing is current
 
 ## License
 
-This project is private and not yet published under a specific license.
+This project is licensed under the [MIT License](LICENSE).
