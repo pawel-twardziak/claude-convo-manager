@@ -3,6 +3,7 @@
 	import { cn } from '$lib/utils';
 	import SyncButton from './SyncButton.svelte';
 	import ThemeToggle from './ThemeToggle.svelte';
+	import UpdateButton from './UpdateButton.svelte';
 
 	const navItems = [
 		{ href: '/', label: 'Dashboard', icon: '◆' },
@@ -37,6 +38,7 @@
 		<span>Claude Code Manager</span>
 		<span class="inline-flex gap-1">
 			<SyncButton />
+			<UpdateButton />
 			<ThemeToggle />
 		</span>
 	</div>

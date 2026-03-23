@@ -30,3 +30,5 @@ dirs = "5"
 chrono = { version = "0.4", features = ["serde"] }
 log = "0.4"
 which = "7"
+tauri-plugin-updater = "2"
+tauri-plugin-process = "2"
