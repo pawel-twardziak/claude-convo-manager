@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="app-icon.png" alt="Claude Conversations" width="128" />
+</p>
+
 # Claude Conversations
 
 A desktop application for indexing, searching, and analyzing your [Claude Code](https://docs.anthropic.com/en/docs/claude-code) conversation history. Built with [Tauri](https://tauri.app/), [SvelteKit](https://svelte.dev/docs/kit), and [Rust](https://www.rust-lang.org/).
