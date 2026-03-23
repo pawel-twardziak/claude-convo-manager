@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2cdc69df-2052-4124-9669-b4b90e9e4b80" name="Changes" comment="" />
+    <list default="true" id="2cdc69df-2052-4124-9669-b4b90e9e4b80" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.github/workflows/build.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/build.yml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -65,6 +67,11 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -80,7 +87,7 @@
       <option name="presentableId" value="Default" />
       <updated>1774281487513</updated>
       <workItem from="1774281488936" duration="7934000" />
-      <workItem from="1774293232569" duration="3028000" />
+      <workItem from="1774293232569" duration="3386000" />
     </task>
     <servers />
   </component>
