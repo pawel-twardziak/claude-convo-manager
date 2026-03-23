@@ -13,8 +13,8 @@ A desktop application for indexing, searching, and analyzing your [Claude Code](
 - **Full-Text Search** - Search across all messages with FTS5 full-text indexing (Porter stemming + Unicode)
 - **Conversation Viewer** - Read conversations with Markdown rendering, syntax-highlighted code blocks, and tool-use display
 - **Token & Cost Tracking** - Tracks input, output, cache creation, and cache read tokens with estimated API costs
-- **Auto-Sync** - Reads and indexes conversations directly from `~/.claude/` with incremental updates
-- **Tagging & Favorites** - Organize sessions with custom tags, favorites, and notes
+- **Sync** - Reads and indexes conversations directly from `~/.claude/` into a local SQLite database
+- **Tagging & Favorites** *(planned)* - Organize sessions with custom tags, favorites, and notes
 - **Dark / Light Theme** - Follows system preference or manual toggle
 
 ## Download
@@ -55,7 +55,7 @@ npm install
 npm run tauri dev
 ```
 
-The app will automatically discover and index your Claude Code conversations from `~/.claude/`.
+Click the **Sync** button to discover and index your Claude Code conversations from `~/.claude/`.
 
 ## Scripts
 
@@ -86,7 +86,7 @@ The app will automatically discover and index your Claude Code conversations fro
 - **SQLite** (via rusqlite) - Local database with WAL mode
 - **FTS5** - Full-text search with Porter stemming
 - **r2d2** - Connection pooling (8 connections)
-- **notify** - File system watching for live sync
+- **notify** - File system watching (planned)
 - **tokio** - Async runtime
 - **serde** - Serialization/deserialization
 
