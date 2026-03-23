@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { formatTokens, formatDate } from '$lib/utils';
 	import ResumeButton from '$lib/components/conversations/ResumeButton.svelte';
+	import OpenInButton from '$lib/components/conversations/OpenInButton.svelte';
+	import InlineRename from '$lib/components/conversations/InlineRename.svelte';
 	import type { SessionWithProject } from '$lib/types/db';
 
 	let { session }: { session: SessionWithProject } = $props();
@@ -11,7 +13,12 @@
 	<div class="flex items-start justify-between gap-4">
 		<div class="min-w-0">
 			<h2 class="text-base font-semibold truncate">
-				{session.custom_title || session.first_prompt || session.id}
+				<InlineRename
+					sessionId={session.id}
+					currentTitle={session.custom_title}
+					fallbackTitle={session.first_prompt}
+					onRenamed={(title) => { session.custom_title = title; }}
+				/>
 			</h2>
 			<div class="flex items-center gap-2 mt-1 text-xs text-muted-foreground flex-wrap">
 				<a href="/conversations?project={session.project_id}" class="hover:underline">
@@ -35,6 +42,9 @@
 				{/if}
 			</div>
 		</div>
-		<ResumeButton sessionId={session.id} />
+		<span class="inline-flex gap-1">
+			<OpenInButton sessionId={session.id} cwd={session.cwd} projectPath={session.project_path} />
+			<ResumeButton sessionId={session.id} />
+		</span>
 	</div>
 </div>

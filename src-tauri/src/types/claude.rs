@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize)]
+#[allow(dead_code)]
 pub struct ClaudeHistoryEntry {
     pub display: Option<String>,
     pub timestamp: Option<f64>,
@@ -10,12 +11,14 @@ pub struct ClaudeHistoryEntry {
 }
 
 #[derive(Debug, Deserialize)]
+#[allow(dead_code)]
 pub struct SessionsIndexFile {
     pub version: Option<i64>,
     pub entries: Option<Vec<SessionsIndexEntry>>,
 }
 
 #[derive(Debug, Deserialize)]
+#[allow(dead_code)]
 pub struct SessionsIndexEntry {
     #[serde(rename = "sessionId")]
     pub session_id: String,
@@ -24,6 +27,7 @@ pub struct SessionsIndexEntry {
 }
 
 #[derive(Debug, Deserialize)]
+#[allow(dead_code)]
 pub struct ActiveSessionFile {
     pub pid: Option<i64>,
     #[serde(rename = "sessionId")]
@@ -77,15 +81,10 @@ pub struct AssistantMessageInner {
     pub usage: Option<TokenUsage>,
 }
 
-#[derive(Debug, Deserialize)]
-pub struct UserMessageInner {
-    pub role: Option<String>,
-    pub content: Option<serde_json::Value>,
-}
-
 // We parse each JSONL line as a GenericMessage first,
 // then match on the `type` field.
 #[derive(Debug, Deserialize)]
+#[allow(dead_code)]
 pub struct GenericMessage {
     #[serde(rename = "type")]
     pub msg_type: String,

@@ -37,6 +37,10 @@ pub fn run() {
             commands::analytics::get_project_breakdown,
             commands::analytics::get_activity_data,
             commands::sync::trigger_sync,
+            commands::rename::rename_session,
+            commands::ide::detect_available_apps,
+            commands::ide::open_in_app,
+            commands::ide::open_terminal,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

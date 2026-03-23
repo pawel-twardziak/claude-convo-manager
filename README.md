@@ -12,6 +12,8 @@ A desktop application for indexing, searching, and analyzing your [Claude Code](
 - **Conversation Browser** - Browse and filter sessions by project, git branch, model, date range, and more
 - **Full-Text Search** - Search across all messages with FTS5 full-text indexing (Porter stemming + Unicode)
 - **Conversation Viewer** - Read conversations with Markdown rendering, syntax-highlighted code blocks, and tool-use display
+- **Inline Rename** - Rename conversations directly from the session list or viewer header
+- **Open in IDE / Terminal** - Auto-detects installed editors (VS Code, Cursor, Zed, JetBrains, etc.) and terminals (Alacritty, Kitty, WezTerm, etc.) and opens the project directory; copies `claude --resume` command to clipboard
 - **Token & Cost Tracking** - Tracks input, output, cache creation, and cache read tokens with estimated API costs
 - **Sync** - Reads and indexes conversations directly from `~/.claude/` into a local SQLite database
 - **Tagging & Favorites** *(planned)* - Organize sessions with custom tags, favorites, and notes
@@ -99,12 +101,12 @@ claude-convo-manager/
 │   │   ├── api/                # Tauri command invocations
 │   │   ├── components/         # UI components
 │   │   │   ├── dashboard/      #   Dashboard stats, charts
-│   │   │   ├── conversations/  #   Session list, filters
+│   │   │   ├── conversations/  #   Session list, filters, rename, open-in
 │   │   │   ├── viewer/         #   Message display, markdown
 │   │   │   ├── search/         #   Search form & results
 │   │   │   ├── layout/         #   Sidebar, theme toggle
 │   │   │   └── ui/             #   Base components (bits-ui)
-│   │   ├── stores/             # Svelte 5 state (sync, theme)
+│   │   ├── stores/             # Svelte 5 state (sync, theme, IDE detection)
 │   │   └── types/              # TypeScript type definitions
 │   └── routes/                 # File-based routing
 │       ├── +page.svelte        #   Dashboard (home)
@@ -118,6 +120,8 @@ claude-convo-manager/
 │   │   │   ├── messages.rs     #   Message retrieval
 │   │   │   ├── search.rs       #   Full-text search
 │   │   │   ├── analytics.rs    #   Dashboard statistics
+│   │   │   ├── rename.rs       #   Session rename (file + DB)
+│   │   │   ├── ide.rs          #   IDE/terminal detection & launch
 │   │   │   └── sync.rs         #   Sync trigger
 │   │   ├── sync/               # Sync engine
 │   │   │   ├── engine.rs       #   Main sync algorithm

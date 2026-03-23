@@ -34,7 +34,7 @@
 	});
 </script>
 
-<div class="p-6 space-y-6 max-w-7xl">
+<div class="p-6 space-y-6 w-full">
 	<h2 class="text-xl font-semibold">Dashboard</h2>
 
 	{#if loading}

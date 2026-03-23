@@ -1,48 +1,6 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct ProjectRow {
-    pub id: i64,
-    pub encoded_name: String,
-    pub project_path: String,
-    pub display_name: Option<String>,
-    pub session_count: i64,
-    pub total_tokens: i64,
-    pub last_activity_at: Option<String>,
-    pub created_at: String,
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct SessionRow {
-    pub id: String,
-    pub project_id: i64,
-    pub file_path: String,
-    pub file_mtime: Option<f64>,
-    pub file_size: Option<i64>,
-    pub first_prompt: Option<String>,
-    pub custom_title: Option<String>,
-    pub message_count: i64,
-    pub user_message_count: i64,
-    pub assistant_message_count: i64,
-    pub tool_use_count: i64,
-    pub git_branch: Option<String>,
-    pub cwd: Option<String>,
-    pub model: Option<String>,
-    pub version: Option<String>,
-    pub permission_mode: Option<String>,
-    pub is_sidechain: i64,
-    pub is_active: i64,
-    pub total_input_tokens: i64,
-    pub total_output_tokens: i64,
-    pub total_cache_creation_tokens: i64,
-    pub total_cache_read_tokens: i64,
-    pub estimated_cost_usd: f64,
-    pub created_at: Option<String>,
-    pub modified_at: Option<String>,
-    pub synced_at: String,
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct SessionWithProject {
     pub id: String,
     pub project_id: i64,

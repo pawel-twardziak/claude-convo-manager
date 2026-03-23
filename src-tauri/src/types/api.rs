@@ -1,8 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use super::db::{
-    DashboardStats, FilterOptions, MessageRow, SearchResult, SessionWithProject,
-};
+use super::db::{MessageRow, SearchResult, SessionWithProject};
 
 #[derive(Debug, Deserialize)]
 pub struct GetSessionsParams {

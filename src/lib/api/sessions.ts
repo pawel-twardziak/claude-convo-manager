@@ -32,3 +32,7 @@ export async function getSession(sessionId: string): Promise<SessionWithProject 
 export async function getFilterOptions(): Promise<FilterOptions> {
 	return invoke<FilterOptions>('get_filter_options');
 }
+
+export async function renameSession(sessionId: string, newTitle: string): Promise<void> {
+	return invoke<void>('rename_session', { sessionId, newTitle });
+}

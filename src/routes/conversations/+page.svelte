@@ -50,7 +50,7 @@
 	});
 </script>
 
-<div class="p-6 space-y-4 max-w-7xl">
+<div class="p-6 space-y-4 w-full">
 	<h2 class="text-xl font-semibold">Conversations</h2>
 
 	{#if options}
