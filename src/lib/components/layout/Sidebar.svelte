@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { getVersion } from '@tauri-apps/api/app';
 	import { cn } from '$lib/utils';
 	import SyncButton from './SyncButton.svelte';
 	import ThemeToggle from './ThemeToggle.svelte';
@@ -10,6 +11,14 @@
 		{ href: '/conversations', label: 'Conversations', icon: '◇' },
 		{ href: '/search', label: 'Search', icon: '⌕' }
 	];
+
+	let version = $state('');
+
+	$effect(() => {
+		getVersion().then((v) => {
+			version = v;
+		});
+	});
 </script>
 
 <aside class="w-56 shrink-0 border-r bg-card flex flex-col h-full">
@@ -35,7 +44,7 @@
 		{/each}
 	</nav>
 	<div class="p-3 border-t text-xs text-muted-foreground flex items-center justify-between">
-		<span>Claude Convo Manager</span>
+		<span>{version ? ` v${version}` : ''}</span>
 		<span class="inline-flex gap-1">
 			<SyncButton />
 			<UpdateButton />
