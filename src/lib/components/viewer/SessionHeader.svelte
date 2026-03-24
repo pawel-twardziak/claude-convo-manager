@@ -6,7 +6,7 @@
 	import type { SessionWithProject } from '$lib/types/db';
 
 	let { session }: { session: SessionWithProject } = $props();
-	let totalTokens = $derived(session.total_input_tokens + session.total_output_tokens);
+	let totalTokens = $derived(session.total_input_tokens + session.total_output_tokens + session.total_cache_creation_tokens + session.total_cache_read_tokens);
 </script>
 
 <div class="border-b px-6 py-4 bg-card shrink-0">

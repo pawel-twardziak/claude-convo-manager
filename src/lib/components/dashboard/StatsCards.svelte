@@ -8,7 +8,7 @@
 		{ title: 'Sessions', value: stats.totalSessions.toString() },
 		{ title: 'Projects', value: stats.totalProjects.toString() },
 		{ title: 'Messages', value: formatTokens(stats.totalMessages) },
-		{ title: 'Tokens Used', value: formatTokens(stats.totalInputTokens + stats.totalOutputTokens) },
+		{ title: 'Tokens Used', value: formatTokens(stats.totalInputTokens + stats.totalOutputTokens + stats.totalCacheCreationTokens + stats.totalCacheReadTokens) },
 		{ title: 'Est. Cost', value: formatCost(stats.estimatedTotalCost) },
 		{ title: 'Avg Messages/Session', value: Math.round(stats.avgMessageCount).toString() }
 	]);

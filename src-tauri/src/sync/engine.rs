@@ -421,7 +421,7 @@ pub fn full_sync(pool: &DbPool, app: &AppHandle) -> Result<(i64, i64), String> {
     conn.execute_batch(
         "UPDATE projects SET
             session_count = (SELECT COUNT(*) FROM sessions WHERE project_id = projects.id),
-            total_tokens = (SELECT COALESCE(SUM(total_input_tokens + total_output_tokens), 0) FROM sessions WHERE project_id = projects.id),
+            total_tokens = (SELECT COALESCE(SUM(total_input_tokens + total_output_tokens + total_cache_creation_tokens + total_cache_read_tokens), 0) FROM sessions WHERE project_id = projects.id),
             last_activity_at = (SELECT MAX(modified_at) FROM sessions WHERE project_id = projects.id)"
     ).map_err(|e| e.to_string())?;
 

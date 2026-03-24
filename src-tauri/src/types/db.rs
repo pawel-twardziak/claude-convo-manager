@@ -79,6 +79,10 @@ pub struct DashboardStats {
     pub total_input_tokens: i64,
     #[serde(rename = "totalOutputTokens")]
     pub total_output_tokens: i64,
+    #[serde(rename = "totalCacheCreationTokens")]
+    pub total_cache_creation_tokens: i64,
+    #[serde(rename = "totalCacheReadTokens")]
+    pub total_cache_read_tokens: i64,
     #[serde(rename = "estimatedTotalCost")]
     pub estimated_total_cost: f64,
     #[serde(rename = "activeSessions")]

@@ -94,6 +94,8 @@ export interface DashboardStats {
   totalMessages: number;
   totalInputTokens: number;
   totalOutputTokens: number;
+  totalCacheCreationTokens: number;
+  totalCacheReadTokens: number;
   estimatedTotalCost: number;
   activeSessions: number;
   todaySessions: number;

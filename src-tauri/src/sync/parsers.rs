@@ -21,6 +21,8 @@ pub struct ParsedMessage {
     pub tool_names: Vec<String>,
     pub input_tokens: i64,
     pub output_tokens: i64,
+    pub cache_creation_tokens: i64,
+    pub cache_read_tokens: i64,
     pub stop_reason: Option<String>,
     pub timestamp: Option<String>,
     pub line_number: i64,
@@ -295,6 +297,8 @@ pub fn parse_session_file(file_path: &Path) -> Result<SessionParseResult, String
                 tool_names: Vec::new(),
                 input_tokens: 0,
                 output_tokens: 0,
+                cache_creation_tokens: 0,
+                cache_read_tokens: 0,
                 stop_reason: None,
                 timestamp: parsed.timestamp,
                 line_number,
@@ -358,6 +362,8 @@ pub fn parse_session_file(file_path: &Path) -> Result<SessionParseResult, String
                 tool_names: tool_names.clone(),
                 input_tokens,
                 output_tokens,
+                cache_creation_tokens: cache_creation,
+                cache_read_tokens: cache_read,
                 stop_reason: stop_reason.clone(),
                 timestamp: parsed.timestamp.clone(),
                 line_number,
@@ -367,6 +373,16 @@ pub fn parse_session_file(file_path: &Path) -> Result<SessionParseResult, String
             if let Some(ref id) = msg_id {
                 if let Some(&existing_idx) = assistant_message_ids.get(id) {
                     if stop_reason.is_some() {
+                        // Update metadata: subtract old tokens, add new (final) tokens
+                        if !is_sidechain {
+                            let old = &messages[existing_idx];
+                            metadata.total_input_tokens += input_tokens - old.input_tokens;
+                            metadata.total_output_tokens += output_tokens - old.output_tokens;
+                            metadata.total_cache_creation_tokens +=
+                                cache_creation - old.cache_creation_tokens;
+                            metadata.total_cache_read_tokens +=
+                                cache_read - old.cache_read_tokens;
+                        }
                         messages[existing_idx] = parsed_msg;
                     }
                     continue;

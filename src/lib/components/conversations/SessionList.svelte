@@ -121,7 +121,7 @@
 						</span>
 					{/if}
 					<span class="w-12 text-right" title="Messages">{s.message_count}</span>
-					<span class="w-14 text-right" title="Tokens">{formatTokens(s.total_input_tokens + s.total_output_tokens)}</span>
+					<span class="w-14 text-right" title="Tokens">{formatTokens(s.total_input_tokens + s.total_output_tokens + s.total_cache_creation_tokens + s.total_cache_read_tokens)}</span>
 					<span class="w-14 text-right" title="Cost">${s.estimated_cost_usd.toFixed(2)}</span>
 					<span class="w-24 text-right" title="Modified">{formatDate(s.modified_at)}</span>
 					<OpenInButton sessionId={s.id} cwd={s.cwd} projectPath={s.project_path} />
