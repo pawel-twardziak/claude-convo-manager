@@ -93,9 +93,7 @@ fn extract_content_text_from_value(content: &serde_json::Value) -> String {
     String::new()
 }
 
-fn extract_assistant_info(
-    content: &[ContentBlock],
-) -> (String, bool, bool, Vec<String>) {
+fn extract_assistant_info(content: &[ContentBlock]) -> (String, bool, bool, Vec<String>) {
     let mut text_parts = Vec::new();
     let mut tool_names = Vec::new();
     let mut has_tool_use = false;
@@ -117,7 +115,12 @@ fn extract_assistant_info(
         }
     }
 
-    (text_parts.join("\n"), has_tool_use, has_thinking, tool_names)
+    (
+        text_parts.join("\n"),
+        has_tool_use,
+        has_thinking,
+        tool_names,
+    )
 }
 
 fn is_streaming_partial(inner: &AssistantMessageInner) -> bool {
@@ -130,8 +133,8 @@ fn is_streaming_partial(inner: &AssistantMessageInner) -> bool {
 }
 
 pub fn parse_session_file(file_path: &Path) -> Result<SessionParseResult, String> {
-    let file =
-        File::open(file_path).map_err(|e| format!("Failed to open {}: {}", file_path.display(), e))?;
+    let file = File::open(file_path)
+        .map_err(|e| format!("Failed to open {}: {}", file_path.display(), e))?;
     let reader = BufReader::new(file);
 
     let mut messages: Vec<ParsedMessage> = Vec::new();
@@ -155,10 +158,8 @@ pub fn parse_session_file(file_path: &Path) -> Result<SessionParseResult, String
     };
 
     let mut assistant_message_ids: HashMap<String, usize> = HashMap::new();
-    let mut line_number: i64 = 0;
 
-    for line_result in reader.lines() {
-        line_number += 1;
+    for (line_number, line_result) in (1_i64..).zip(reader.lines()) {
         let line = match line_result {
             Ok(l) => l,
             Err(_) => continue,
@@ -213,12 +214,10 @@ pub fn parse_session_file(file_path: &Path) -> Result<SessionParseResult, String
             let content_val = message_val.and_then(|m| m.get("content"));
 
             let content_text = content_val
-                .map(|c| extract_content_text_from_value(c))
+                .map(extract_content_text_from_value)
                 .unwrap_or_default();
 
-            let is_tool_result = content_val
-                .map(|c| c.is_array())
-                .unwrap_or(false);
+            let is_tool_result = content_val.map(|c| c.is_array()).unwrap_or(false);
 
             // Track first prompt
             if metadata.first_prompt.is_none()
@@ -256,18 +255,10 @@ pub fn parse_session_file(file_path: &Path) -> Result<SessionParseResult, String
 
             // Track timestamps
             if let Some(ref ts) = parsed.timestamp {
-                if metadata
-                    .created_at
-                    .as_ref()
-                    .map_or(true, |c| ts < c)
-                {
+                if metadata.created_at.as_ref().map_or(true, |c| ts < c) {
                     metadata.created_at = Some(ts.clone());
                 }
-                if metadata
-                    .modified_at
-                    .as_ref()
-                    .map_or(true, |m| ts > m)
-                {
+                if metadata.modified_at.as_ref().map_or(true, |m| ts > m) {
                     metadata.modified_at = Some(ts.clone());
                 }
             }
@@ -338,9 +329,7 @@ pub fn parse_session_file(file_path: &Path) -> Result<SessionParseResult, String
             let cache_creation = usage
                 .and_then(|u| u.cache_creation_input_tokens)
                 .unwrap_or(0);
-            let cache_read = usage
-                .and_then(|u| u.cache_read_input_tokens)
-                .unwrap_or(0);
+            let cache_read = usage.and_then(|u| u.cache_read_input_tokens).unwrap_or(0);
 
             let model = inner.model.clone();
             let stop_reason = inner.stop_reason.clone();
@@ -380,8 +369,7 @@ pub fn parse_session_file(file_path: &Path) -> Result<SessionParseResult, String
                             metadata.total_output_tokens += output_tokens - old.output_tokens;
                             metadata.total_cache_creation_tokens +=
                                 cache_creation - old.cache_creation_tokens;
-                            metadata.total_cache_read_tokens +=
-                                cache_read - old.cache_read_tokens;
+                            metadata.total_cache_read_tokens += cache_read - old.cache_read_tokens;
                         }
                         messages[existing_idx] = parsed_msg;
                     }
@@ -407,11 +395,7 @@ pub fn parse_session_file(file_path: &Path) -> Result<SessionParseResult, String
             }
 
             if let Some(ref ts) = parsed.timestamp {
-                if metadata
-                    .modified_at
-                    .as_ref()
-                    .map_or(true, |m| ts > m)
-                {
+                if metadata.modified_at.as_ref().map_or(true, |m| ts > m) {
                     metadata.modified_at = Some(ts.clone());
                 }
             }

@@ -7,7 +7,9 @@ use tauri::{AppHandle, Emitter};
 
 use crate::db::DbPool;
 use crate::types::api::SyncProgress;
-use crate::types::claude::{ActiveSessionFile, ClaudeHistoryEntry, SessionsIndexFile, SubagentMeta};
+use crate::types::claude::{
+    ActiveSessionFile, ClaudeHistoryEntry, SessionsIndexFile, SubagentMeta,
+};
 
 use super::parsers::{get_primary_model, parse_session_file};
 use super::path_encoder::{extract_display_name, get_claude_dir, get_projects_dir};
@@ -44,7 +46,7 @@ pub fn full_sync(pool: &DbPool, app: &AppHandle) -> Result<(i64, i64), String> {
                 }
                 if let Ok(entry) = serde_json::from_str::<ClaudeHistoryEntry>(&trimmed) {
                     if let Some(project) = entry.project {
-                        let encoded = project.replace(|c: char| c == '/' || c == '.', "-");
+                        let encoded = project.replace(['/', '.'], "-");
                         project_path_map.insert(encoded, project);
                     }
                 }
