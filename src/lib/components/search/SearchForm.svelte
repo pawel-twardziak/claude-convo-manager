@@ -3,7 +3,7 @@
 	import { resolve } from '$app/paths';
 
 	let { defaultValue = '' }: { defaultValue?: string } = $props();
-	let query = $state(defaultValue);
+	let query = $derived(defaultValue);
 
 	function handleSubmit(e: SubmitEvent) {
 		e.preventDefault();
