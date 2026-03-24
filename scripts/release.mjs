@@ -31,7 +31,7 @@ function getLatestTag() {
 
 function getPreviousTag(currentTag) {
 	try {
-		const tags = exec('git tag --sort=-v:refnum').split('\n').filter(Boolean);
+		const tags = exec('git tag --sort=-v:refname').split('\n').filter(Boolean);
 		const idx = tags.indexOf(currentTag);
 		return idx >= 0 && idx + 1 < tags.length ? tags[idx + 1] : null;
 	} catch {

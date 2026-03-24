@@ -120,7 +120,7 @@ jobs:
       - name: Generate release notes
         run: |
           CURRENT_TAG="${{ github.ref_name }}"
-          PREVIOUS_TAG=$(git tag --sort=-v:refnum | grep -v "^${CURRENT_TAG}$" | head -1)
+          PREVIOUS_TAG=$(git tag --sort=-v:refname | grep -v "^${CURRENT_TAG}$" | head -1)
 
           if [ -z "$PREVIOUS_TAG" ]; then
             echo "No previous tag found, using all commits" >&2
