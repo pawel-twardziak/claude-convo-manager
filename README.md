@@ -17,6 +17,7 @@ A desktop application for indexing, searching, and analyzing your [Claude Code](
 - **Token & Cost Tracking** - Tracks input, output, cache creation, and cache read tokens with estimated API costs
 - **Sync** - Reads and indexes conversations directly from `~/.claude/` into a local SQLite database
 - **Tagging & Favorites** *(planned)* - Organize sessions with custom tags, favorites, and notes
+- **Auto-Update** - Checks for new versions via GitHub Releases with signature verification; downloads, shows progress, and restarts in-place
 - **Dark / Light Theme** - Follows system preference or manual toggle
 
 ## Download
@@ -180,14 +181,16 @@ This produces platform-specific installers in `src-tauri/target/release/bundle/`
 
 Two GitHub Actions workflows handle builds:
 
-- **CI** (`.github/workflows/ci.yml`) — builds on every push to `main` and on PRs to verify the build succeeds
-- **Release** (`.github/workflows/release.yml`) — builds and creates a draft GitHub Release when a `v*` tag is pushed
+- **CI** (`.github/workflows/ci.yml`) - builds on every push to `main` and on PRs to verify the build succeeds
+- **Release** (`.github/workflows/release.yml`) - builds and creates a draft GitHub Release when a `v*` tag is pushed
 
 Platforms: macOS (aarch64 + x86_64), Ubuntu 22.04, Windows.
 
 To create a release: `npm run release <version>` then `git push && git push origin v<version>`.
 
-Code signing for macOS and Windows is supported but currently disabled (no certificates configured). Apps will show security warnings (Gatekeeper on macOS, SmartScreen on Windows). To enable signing, add the following secrets to the GitHub repository:
+> **Note:** Code signing for macOS and Windows is supported but currently disabled (no certificates configured). Apps will show security warnings (Gatekeeper on macOS, SmartScreen on Windows).
+
+To enable signing, add the following secrets to the GitHub repository:
 
 **macOS** (signing + notarization):
 
@@ -207,6 +210,10 @@ Code signing for macOS and Windows is supported but currently disabled (no certi
 | --- | --- |
 | `WINDOWS_CERTIFICATE` | Base64-encoded `.pfx` code signing certificate |
 | `WINDOWS_CERTIFICATE_PASSWORD` | Password for the `.pfx` file |
+
+## Feedback & Issues
+
+Found a bug or have an idea for a feature? [Open an issue](../../issues/new) - all feedback is welcome and helps shape the project.
 
 ## Contributing
 
