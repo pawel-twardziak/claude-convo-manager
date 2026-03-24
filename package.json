@@ -10,7 +10,7 @@
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-		"tauri": "tauri",
+		"tauri": "export $(grep -v '^#' .env | xargs) && tauri",
 		"release": "node scripts/release.mjs",
 		"format": "prettier --write \"src/**/*.{svelte,ts,css}\"",
 		"lint": "eslint \"src/**/*.{svelte,ts}\"",
