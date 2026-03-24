@@ -35,7 +35,7 @@
 		{/each}
 	</nav>
 	<div class="p-3 border-t text-xs text-muted-foreground flex items-center justify-between">
-		<span>Claude Code Manager</span>
+		<span>Claude Convo Manager</span>
 		<span class="inline-flex gap-1">
 			<SyncButton />
 			<UpdateButton />
