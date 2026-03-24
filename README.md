@@ -211,6 +211,10 @@ To enable signing, add the following secrets to the GitHub repository:
 | `WINDOWS_CERTIFICATE` | Base64-encoded `.pfx` code signing certificate |
 | `WINDOWS_CERTIFICATE_PASSWORD` | Password for the `.pfx` file |
 
+## Blog
+
+Follow development updates and articles on **[langhug.blog](https://langhug.blog/)**.
+
 ## Feedback & Issues
 
 Found a bug or have an idea for a feature? [Open an issue](../../issues/new) - all feedback is welcome and helps shape the project.
