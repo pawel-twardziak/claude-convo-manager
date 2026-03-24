@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { getVersion } from '@tauri-apps/api/app';
@@ -15,10 +16,8 @@
 
 	let version = $state('');
 
-	$effect(() => {
-		getVersion().then((v) => {
-			version = v;
-		});
+	onMount(async () => {
+		version = await getVersion();
 	});
 </script>
 
