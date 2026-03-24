@@ -22,8 +22,7 @@ pub fn run() {
 
             // Initialize database
             let db_path = db::get_db_path(app.handle());
-            let pool = db::create_pool(&db_path)
-                .expect("Failed to create database pool");
+            let pool = db::create_pool(&db_path).expect("Failed to create database pool");
             app.manage(pool);
 
             Ok(())

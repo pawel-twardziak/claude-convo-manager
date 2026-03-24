@@ -56,8 +56,7 @@ pub fn search_messages(
         project_filter
     );
 
-    let mut count_params: Vec<Box<dyn rusqlite::types::ToSql>> =
-        vec![Box::new(fts_query.clone())];
+    let mut count_params: Vec<Box<dyn rusqlite::types::ToSql>> = vec![Box::new(fts_query.clone())];
     if let Some(pid) = params.project_id {
         count_params.push(Box::new(pid));
     }
@@ -85,8 +84,7 @@ pub fn search_messages(
         project_filter
     );
 
-    let mut data_params: Vec<Box<dyn rusqlite::types::ToSql>> =
-        vec![Box::new(fts_query)];
+    let mut data_params: Vec<Box<dyn rusqlite::types::ToSql>> = vec![Box::new(fts_query)];
     if let Some(pid) = params.project_id {
         data_params.push(Box::new(pid));
     }

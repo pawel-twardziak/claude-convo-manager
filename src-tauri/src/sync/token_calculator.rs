@@ -53,11 +53,7 @@ fn find_pricing(model: &str) -> &ModelPricing {
     }
     // Fuzzy match: check if model starts with first 3 segments of a known key
     for (key, pricing) in PRICING {
-        let prefix: String = key
-            .splitn(4, '-')
-            .take(3)
-            .collect::<Vec<_>>()
-            .join("-");
+        let prefix: String = key.splitn(4, '-').take(3).collect::<Vec<_>>().join("-");
         if model.starts_with(&prefix) {
             return pricing;
         }

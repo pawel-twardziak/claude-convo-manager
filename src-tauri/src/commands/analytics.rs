@@ -2,7 +2,9 @@ use rusqlite::params_from_iter;
 use tauri::State;
 
 use crate::db::DbPool;
-use crate::types::api::{ActivityEntry, GetTokenUsageParams, ProjectBreakdownEntry, TokenUsageEntry};
+use crate::types::api::{
+    ActivityEntry, GetTokenUsageParams, ProjectBreakdownEntry, TokenUsageEntry,
+};
 use crate::types::db::DashboardStats;
 
 #[tauri::command]
@@ -107,7 +109,9 @@ pub fn get_token_usage_over_time(
 }
 
 #[tauri::command]
-pub fn get_project_breakdown(pool: State<'_, DbPool>) -> Result<Vec<ProjectBreakdownEntry>, String> {
+pub fn get_project_breakdown(
+    pool: State<'_, DbPool>,
+) -> Result<Vec<ProjectBreakdownEntry>, String> {
     let conn = pool.get().map_err(|e| e.to_string())?;
 
     let mut stmt = conn

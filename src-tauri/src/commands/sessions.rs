@@ -207,9 +207,7 @@ pub fn get_filter_options(pool: State<'_, DbPool>) -> Result<FilterOptions, Stri
     let conn = pool.get().map_err(|e| e.to_string())?;
 
     let mut stmt = conn
-        .prepare(
-            "SELECT id, display_name, session_count FROM projects ORDER BY session_count DESC",
-        )
+        .prepare("SELECT id, display_name, session_count FROM projects ORDER BY session_count DESC")
         .map_err(|e| e.to_string())?;
     let projects: Vec<FilterOptionProject> = stmt
         .query_map([], |row| {
