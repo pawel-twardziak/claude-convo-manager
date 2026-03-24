@@ -82,7 +82,7 @@ jobs:
         with:
           tagName: ${{ github.ref_name }}
           releaseName: 'Claude Conversations ${{ github.ref_name }}'
-          releaseBody: 'See the assets below to download and install.'
+          releaseBody: 'Build in progress — release notes will be added shortly.'
           releaseDraft: true
           updater: true
           args: ${{ matrix.args }}
@@ -97,7 +97,45 @@ jobs:
         with:
           tagName: ${{ github.ref_name }}
           releaseName: 'Claude Conversations ${{ github.ref_name }}'
-          releaseBody: 'See the assets below to download and install.'
+          releaseBody: 'Build in progress — release notes will be added shortly.'
           releaseDraft: true
           updater: true
           args: ${{ matrix.args }}
+
+  release-notes:
+    needs: release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Setup node
+        uses: actions/setup-node@v5
+        with:
+          node-version: lts/*
+
+      - name: Generate release notes
+        run: |
+          CURRENT_TAG="${{ github.ref_name }}"
+          PREVIOUS_TAG=$(git tag --sort=-v:refnum | grep -v "^${CURRENT_TAG}$" | head -1)
+
+          if [ -z "$PREVIOUS_TAG" ]; then
+            echo "No previous tag found, using all commits" >&2
+            node scripts/release.mjs --notes "$(git rev-list --max-parents=0 HEAD)" "$CURRENT_TAG" > release-notes.md
+          else
+            echo "Generating notes for ${PREVIOUS_TAG}..${CURRENT_TAG}" >&2
+            node scripts/release.mjs --notes "$PREVIOUS_TAG" "$CURRENT_TAG" > release-notes.md
+          fi
+
+          echo "--- Generated release notes ---"
+          cat release-notes.md
+
+      - name: Update release body
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ github.ref_name }}"
+          gh release edit "$TAG" --notes-file release-notes.md
