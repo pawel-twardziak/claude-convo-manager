@@ -32,6 +32,7 @@
 	let html = $derived(marked.parse(content, { renderer }) as string);
 </script>
 
-<div class="prose prose-sm dark:prose-invert max-w-none break-words [&_pre]:my-0 [&_pre]:p-0 [&_pre]:bg-transparent">
+<div class="prose prose-sm dark:prose-invert max-w-none break-words [&_pre]:my-0 [&_pre]:bg-transparent [&_pre]:p-0">
+	<!-- eslint-disable-next-line svelte/no-at-html-tags -- rendered markdown from marked.parse -->
 	{@html html}
 </div>

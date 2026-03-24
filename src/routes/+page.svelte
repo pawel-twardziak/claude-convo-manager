@@ -34,18 +34,18 @@
 	});
 </script>
 
-<div class="p-6 space-y-6 w-full">
+<div class="w-full space-y-6 p-6">
 	<h2 class="text-xl font-semibold">Dashboard</h2>
 
 	{#if loading}
-		<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-			{#each Array(6) as _}
-				<div class="rounded-lg border bg-card shadow-sm p-4 h-20 animate-pulse"></div>
+		<div class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
+			{#each Array(6) as _, i (i)}
+				<div class="bg-card h-20 animate-pulse rounded-lg border p-4 shadow-sm"></div>
 			{/each}
 		</div>
 	{:else if stats}
 		<StatsCards {stats} />
-		<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+		<div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
 			<ProjectChart data={projects} />
 			<ActivityChart data={activity} />
 		</div>

@@ -50,7 +50,7 @@
 	});
 </script>
 
-<div class="p-6 space-y-4 w-full">
+<div class="w-full space-y-4 p-6">
 	<h2 class="text-xl font-semibold">Conversations</h2>
 
 	{#if options}
@@ -59,8 +59,8 @@
 
 	{#if loading && sessions.length === 0}
 		<div class="space-y-2">
-			{#each Array(5) as _}
-				<div class="h-16 rounded-lg border animate-pulse"></div>
+			{#each Array(5) as _, i (i)}
+				<div class="h-16 animate-pulse rounded-lg border"></div>
 			{/each}
 		</div>
 	{:else}

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { getVersion } from '@tauri-apps/api/app';
 	import { cn } from '$lib/utils';
@@ -21,18 +22,18 @@
 	});
 </script>
 
-<aside class="w-56 shrink-0 border-r bg-card flex flex-col h-full">
-	<div class="p-4 border-b flex items-center gap-2">
-		<img src="/app-icon.png" alt="App icon" class="w-6 h-6 rounded" />
-		<h1 class="font-semibold text-sm tracking-tight">Claude Conversations</h1>
+<aside class="bg-card flex h-full w-56 shrink-0 flex-col border-r">
+	<div class="flex items-center gap-2 border-b p-4">
+		<img src="/app-icon.png" alt="App icon" class="h-6 w-6 rounded" />
+		<h1 class="text-sm font-semibold tracking-tight">Claude Conversations</h1>
 	</div>
-	<nav class="flex-1 p-2 space-y-0.5">
-		{#each navItems as item}
+	<nav class="flex-1 space-y-0.5 p-2">
+		{#each navItems as item (item.href)}
 			{@const isActive = item.href === '/' ? page.url.pathname === '/' : page.url.pathname.startsWith(item.href)}
 			<a
-				href={item.href}
+				href={resolve(item.href)}
 				class={cn(
-					'flex items-center gap-2 px-3 py-2 rounded-md text-sm transition-colors',
+					'flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors',
 					isActive
 						? 'bg-primary text-primary-foreground'
 						: 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
@@ -43,7 +44,7 @@
 			</a>
 		{/each}
 	</nav>
-	<div class="p-3 border-t text-xs text-muted-foreground flex items-center justify-between">
+	<div class="text-muted-foreground flex items-center justify-between border-t p-3 text-xs">
 		<span>{version ? ` v${version}` : ''}</span>
 		<span class="inline-flex gap-1">
 			<SyncButton />

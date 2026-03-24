@@ -43,26 +43,24 @@
 	});
 </script>
 
-<div class="p-6 space-y-4 w-full">
+<div class="w-full space-y-4 p-6">
 	<h2 class="text-xl font-semibold">Search</h2>
 
 	<SearchForm defaultValue={page.url.searchParams.get('q') || ''} />
 
 	{#if loading}
 		<div class="space-y-2">
-			{#each Array(3) as _}
-				<div class="h-20 rounded-lg border animate-pulse"></div>
+			{#each Array(3) as _, i (i)}
+				<div class="h-20 animate-pulse rounded-lg border"></div>
 			{/each}
 		</div>
 	{:else if searched}
-		<p class="text-sm text-muted-foreground">
+		<p class="text-muted-foreground text-sm">
 			{total} result{total !== 1 ? 's' : ''} found
 		</p>
 		<SearchResults {results} />
 		{#if results.length === 0}
-			<p class="text-center text-sm text-muted-foreground py-8">
-				No results found. Try a different search term.
-			</p>
+			<p class="text-muted-foreground py-8 text-center text-sm">No results found. Try a different search term.</p>
 		{/if}
 	{/if}
 </div>

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import { formatTokens, formatDate } from '$lib/utils';
 	import ResumeButton from '$lib/components/conversations/ResumeButton.svelte';
 	import OpenInButton from '$lib/components/conversations/OpenInButton.svelte';
@@ -6,22 +7,29 @@
 	import type { SessionWithProject } from '$lib/types/db';
 
 	let { session }: { session: SessionWithProject } = $props();
-	let totalTokens = $derived(session.total_input_tokens + session.total_output_tokens + session.total_cache_creation_tokens + session.total_cache_read_tokens);
+	let totalTokens = $derived(
+		session.total_input_tokens +
+			session.total_output_tokens +
+			session.total_cache_creation_tokens +
+			session.total_cache_read_tokens
+	);
 </script>
 
-<div class="border-b px-6 py-4 bg-card shrink-0">
+<div class="bg-card shrink-0 border-b px-6 py-4">
 	<div class="flex items-start justify-between gap-4">
 		<div class="min-w-0">
-			<h2 class="text-base font-semibold truncate">
+			<h2 class="truncate text-base font-semibold">
 				<InlineRename
 					sessionId={session.id}
 					currentTitle={session.custom_title}
 					fallbackTitle={session.first_prompt}
-					onRenamed={(title) => { session.custom_title = title; }}
+					onRenamed={(title) => {
+						session.custom_title = title;
+					}}
 				/>
 			</h2>
-			<div class="flex items-center gap-2 mt-1 text-xs text-muted-foreground flex-wrap">
-				<a href="/conversations?project={session.project_id}" class="hover:underline">
+			<div class="text-muted-foreground mt-1 flex flex-wrap items-center gap-2 text-xs">
+				<a href={resolve(`/conversations?project=${session.project_id}`)} class="hover:underline">
 					{session.project_display_name}
 				</a>
 				{#if session.git_branch}
@@ -30,7 +38,7 @@
 					</span>
 				{/if}
 				{#if session.model}
-					<span class="inline-flex items-center rounded-full border bg-secondary px-2 py-0 text-[10px]">
+					<span class="bg-secondary inline-flex items-center rounded-full border px-2 py-0 text-[10px]">
 						{session.model.replace('claude-', '')}
 					</span>
 				{/if}

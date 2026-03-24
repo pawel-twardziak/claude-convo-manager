@@ -41,13 +41,15 @@
 			<div>
 				<button
 					onclick={() => (showThinking = !showThinking)}
-					class="text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+					class="text-muted-foreground hover:text-foreground cursor-pointer text-xs transition-colors"
 				>
 					{showThinking ? '▼' : '▶'} Thinking...
 				</button>
 				{#if showThinking}
-					<div class="mt-1 p-3 rounded-md bg-muted/50 border text-xs text-muted-foreground whitespace-pre-wrap max-h-96 overflow-auto">
-						{#each thinkingBlocks as b}
+					<div
+						class="bg-muted/50 text-muted-foreground mt-1 max-h-96 overflow-auto rounded-md border p-3 text-xs whitespace-pre-wrap"
+					>
+						{#each thinkingBlocks as b, i (i)}
 							<span>{b.thinking}</span>
 						{/each}
 					</div>
@@ -56,34 +58,36 @@
 		{/if}
 
 		{#if hasBlocks}
-			{#each textBlocks as block}
-				<div class="bg-card border rounded-2xl rounded-bl-md px-4 py-3">
+			{#each textBlocks as block, i (i)}
+				<div class="bg-card rounded-2xl rounded-bl-md border px-4 py-3">
 					<Markdown content={block.text || ''} />
 				</div>
 			{/each}
 		{:else if message.content_text}
-			<div class="bg-card border rounded-2xl rounded-bl-md px-4 py-3">
+			<div class="bg-card rounded-2xl rounded-bl-md border px-4 py-3">
 				<p class="text-sm whitespace-pre-wrap">{message.content_text}</p>
 			</div>
 		{/if}
 
-		{#each toolBlocks as block}
+		{#each toolBlocks as block (block.id)}
 			<ToolUseBlock {block} />
 		{/each}
 
 		<div class="flex items-center gap-2 px-1">
 			{#if message.model}
-				<span class="inline-flex items-center rounded-full border px-2 py-0 text-[9px] font-normal text-muted-foreground">
+				<span
+					class="text-muted-foreground inline-flex items-center rounded-full border px-2 py-0 text-[9px] font-normal"
+				>
 					{shortModel(message.model)}
 				</span>
 			{/if}
 			{#if message.input_tokens > 0 || message.output_tokens > 0}
-				<span class="text-[10px] text-muted-foreground">
+				<span class="text-muted-foreground text-[10px]">
 					{message.input_tokens + message.output_tokens} tokens
 				</span>
 			{/if}
 			{#if message.timestamp}
-				<span class="text-[10px] text-muted-foreground">
+				<span class="text-muted-foreground text-[10px]">
 					{new Date(message.timestamp).toLocaleTimeString()}
 				</span>
 			{/if}
