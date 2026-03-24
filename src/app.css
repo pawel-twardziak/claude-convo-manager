@@ -130,3 +130,24 @@
     color-scheme: dark;
   }
 }
+
+mark[data-search-highlight] {
+  background-color: oklch(0.9 0.15 90);
+  border-radius: 2px;
+  padding: 0 1px;
+}
+
+mark[data-search-highlight].search-current {
+  background-color: oklch(0.75 0.2 50);
+  outline: 2px solid oklch(0.7 0.25 50);
+}
+
+.dark mark[data-search-highlight] {
+  background-color: oklch(0.45 0.12 90);
+  color: oklch(0.98 0 0);
+}
+
+.dark mark[data-search-highlight].search-current {
+  background-color: oklch(0.55 0.2 50);
+  outline: 2px solid oklch(0.6 0.2 50);
+}

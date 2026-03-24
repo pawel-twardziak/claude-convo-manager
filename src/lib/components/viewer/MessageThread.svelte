@@ -6,7 +6,7 @@
 	let { messages }: { messages: MessageRow[] } = $props();
 </script>
 
-<div class="flex-1 overflow-auto">
+<div>
 	<div class="max-w-4xl mx-auto py-6 px-6 space-y-4">
 		{#each messages as msg (msg.id)}
 			{#if msg.type === 'user' && msg.role === 'user'}

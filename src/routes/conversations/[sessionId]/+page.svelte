@@ -5,12 +5,32 @@
 	import { getSessionMessages } from '$lib/api/messages';
 	import SessionHeader from '$lib/components/viewer/SessionHeader.svelte';
 	import MessageThread from '$lib/components/viewer/MessageThread.svelte';
+	import ConversationSearch from '$lib/components/viewer/ConversationSearch.svelte';
+	import {
+		openSearch,
+		closeSearch,
+		getIsOpen
+	} from '$lib/stores/conversationSearch.svelte';
 	import type { SessionWithProject, MessageRow } from '$lib/types/db';
 
 	let session: SessionWithProject | null = $state(null);
 	let messages: MessageRow[] = $state([]);
 	let loading = $state(true);
 	let error = $state('');
+	let threadContainer: HTMLDivElement | undefined = $state();
+
+	let searchOpen = $derived(getIsOpen());
+
+	function handleKeydown(e: KeyboardEvent) {
+		if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+			e.preventDefault();
+			openSearch();
+		}
+		if (e.key === 'Escape' && searchOpen) {
+			e.preventDefault();
+			closeSearch(threadContainer);
+		}
+	}
 
 	onMount(async () => {
 		const sessionId = page.params.sessionId;
@@ -44,6 +64,15 @@
 {:else if session}
 	<div class="flex flex-col h-full">
 		<SessionHeader {session} />
-		<MessageThread {messages} />
+		<div class="relative flex-1 overflow-hidden">
+			{#if searchOpen}
+				<ConversationSearch container={threadContainer} />
+			{/if}
+			<div bind:this={threadContainer} class="h-full overflow-auto">
+				<MessageThread {messages} />
+			</div>
+		</div>
 	</div>
 {/if}
+
+<svelte:window onkeydown={handleKeydown} />
