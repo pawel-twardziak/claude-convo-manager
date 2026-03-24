@@ -65,17 +65,30 @@
 		onkeydown={onKeydown}
 		onblur={save}
 		disabled={saving}
-		class="w-full text-base font-semibold bg-transparent border-b-2 border-primary outline-none px-0 py-0.5"
+		class="border-primary w-full border-b-2 bg-transparent px-0 py-0.5 text-base font-semibold outline-none"
 	/>
 {:else}
-	<span class="group inline-flex items-center gap-1.5 min-w-0">
+	<span class="group inline-flex min-w-0 items-center gap-1.5">
 		<span class="truncate">{displayTitle}</span>
 		<button
 			onclick={startEditing}
-			class="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-foreground cursor-pointer"
+			class="text-muted-foreground hover:text-foreground shrink-0 cursor-pointer opacity-0 transition-opacity group-hover:opacity-100"
 			title="Rename conversation"
 		>
-			<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				width="14"
+				height="14"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+				><path
+					d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"
+				/><path d="m15 5 4 4" /></svg
+			>
 		</button>
 	</span>
 {/if}

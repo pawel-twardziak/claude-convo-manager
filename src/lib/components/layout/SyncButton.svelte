@@ -12,7 +12,7 @@
 	onclick={handleSync}
 	disabled={isSyncing()}
 	title="Re-sync conversations from ~/.claude"
-	class="h-7 px-2 text-[11px] rounded-md text-muted-foreground hover:bg-accent hover:text-accent-foreground disabled:opacity-50 cursor-pointer"
+	class="text-muted-foreground hover:bg-accent hover:text-accent-foreground h-7 cursor-pointer rounded-md px-2 text-[11px] disabled:opacity-50"
 >
 	{isSyncing() ? 'Syncing...' : 'Sync'}
 </button>

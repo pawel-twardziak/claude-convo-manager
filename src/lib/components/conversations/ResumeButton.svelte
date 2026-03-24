@@ -15,14 +15,14 @@
 
 <span class="inline-flex gap-1">
 	<button
-		class="h-7 px-2 text-[11px] rounded-md text-muted-foreground hover:bg-accent hover:text-accent-foreground cursor-pointer"
+		class="text-muted-foreground hover:bg-accent hover:text-accent-foreground h-7 cursor-pointer rounded-md px-2 text-[11px]"
 		onclick={(e) => copy(`claude --resume ${sessionId}`, 'copied-cmd', e)}
 		title="Copy: claude --resume <id>"
 	>
 		{copyState === 'copied-cmd' ? 'Copied!' : 'Resume'}
 	</button>
 	<button
-		class="h-7 px-2 text-[11px] font-mono rounded-md text-muted-foreground hover:bg-accent hover:text-accent-foreground cursor-pointer"
+		class="text-muted-foreground hover:bg-accent hover:text-accent-foreground h-7 cursor-pointer rounded-md px-2 font-mono text-[11px]"
 		onclick={(e) => copy(sessionId, 'copied-id', e)}
 		title="Copy session ID"
 	>

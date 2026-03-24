@@ -57,9 +57,7 @@
 	}
 </script>
 
-<div
-	class="absolute top-2 right-6 z-50 flex items-center gap-1 bg-card border rounded-md shadow-md px-2 py-1.5"
->
+<div class="bg-card absolute top-2 right-6 z-50 flex items-center gap-1 rounded-md border px-2 py-1.5 shadow-md">
 	<Search size={14} class="text-muted-foreground shrink-0" />
 	<input
 		bind:this={inputEl}
@@ -67,28 +65,28 @@
 		oninput={onInput}
 		onkeydown={onKeydown}
 		placeholder="Search in conversation..."
-		class="w-56 h-7 bg-transparent text-sm outline-none px-1"
+		class="h-7 w-56 bg-transparent px-1 text-sm outline-none"
 	/>
-	<span class="text-xs text-muted-foreground whitespace-nowrap min-w-16 text-center">
+	<span class="text-muted-foreground min-w-16 text-center text-xs whitespace-nowrap">
 		{matchLabel}
 	</span>
 	<button
 		onclick={prevMatch}
 		disabled={matchCount === 0}
-		class="p-1 rounded hover:bg-accent text-muted-foreground hover:text-foreground disabled:opacity-30 cursor-pointer disabled:cursor-default"
+		class="hover:bg-accent text-muted-foreground hover:text-foreground cursor-pointer rounded p-1 disabled:cursor-default disabled:opacity-30"
 	>
 		<ChevronUp size={14} />
 	</button>
 	<button
 		onclick={nextMatch}
 		disabled={matchCount === 0}
-		class="p-1 rounded hover:bg-accent text-muted-foreground hover:text-foreground disabled:opacity-30 cursor-pointer disabled:cursor-default"
+		class="hover:bg-accent text-muted-foreground hover:text-foreground cursor-pointer rounded p-1 disabled:cursor-default disabled:opacity-30"
 	>
 		<ChevronDown size={14} />
 	</button>
 	<button
 		onclick={close}
-		class="p-1 rounded hover:bg-accent text-muted-foreground hover:text-foreground cursor-pointer"
+		class="hover:bg-accent text-muted-foreground hover:text-foreground cursor-pointer rounded p-1"
 	>
 		<X size={14} />
 	</button>

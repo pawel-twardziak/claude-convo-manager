@@ -23,7 +23,7 @@
 
 		const points = data.map((d, i) => ({
 			x: padding + i * step,
-			y: h - padding - ((d.count / maxCount) * (h - padding * 2))
+			y: h - padding - (d.count / maxCount) * (h - padding * 2)
 		}));
 
 		const line = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
@@ -32,22 +32,22 @@
 	});
 </script>
 
-<div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+<div class="bg-card text-card-foreground rounded-lg border shadow-sm">
 	<div class="p-4 pb-2">
 		<h3 class="text-base font-semibold">Activity (Last 90 Days)</h3>
 	</div>
 	<div class="px-4 pb-4">
 		<div class="h-[300px]">
 			{#if data.length === 0}
-				<div class="h-full flex items-center justify-center text-sm text-muted-foreground">
+				<div class="text-muted-foreground flex h-full items-center justify-center text-sm">
 					No activity data available
 				</div>
 			{:else}
-				<svg viewBox="0 0 100 100" preserveAspectRatio="none" class="w-full h-full">
+				<svg viewBox="0 0 100 100" preserveAspectRatio="none" class="h-full w-full">
 					<path d={svgPath.area} fill="var(--color-primary)" fill-opacity="0.1" />
 					<path d={svgPath.line} fill="none" stroke="var(--color-primary)" stroke-width="0.5" />
 				</svg>
-				<div class="flex justify-between text-[10px] text-muted-foreground mt-1">
+				<div class="text-muted-foreground mt-1 flex justify-between text-[10px]">
 					{#if data.length > 0}
 						<span>{formatDate(data[0].date)}</span>
 						<span>{formatDate(data[data.length - 1].date)}</span>

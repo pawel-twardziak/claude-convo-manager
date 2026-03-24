@@ -7,7 +7,7 @@
 </script>
 
 <div>
-	<div class="max-w-4xl mx-auto py-6 px-6 space-y-4">
+	<div class="mx-auto max-w-4xl space-y-4 px-6 py-6">
 		{#each messages as msg (msg.id)}
 			{#if msg.type === 'user' && msg.role === 'user'}
 				<UserMessage message={msg} />
@@ -16,9 +16,7 @@
 			{/if}
 		{/each}
 		{#if messages.length === 0}
-			<div class="text-center text-sm text-muted-foreground py-8">
-				No messages in this conversation.
-			</div>
+			<div class="text-muted-foreground py-8 text-center text-sm">No messages in this conversation.</div>
 		{/if}
 	</div>
 </div>

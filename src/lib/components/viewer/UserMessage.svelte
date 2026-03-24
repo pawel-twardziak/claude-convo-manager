@@ -6,12 +6,12 @@
 </script>
 
 <div class="flex justify-end">
-	<div class="max-w-[85%] bg-primary text-primary-foreground rounded-2xl rounded-br-md px-4 py-3">
-		<p class="text-sm whitespace-pre-wrap break-words">
+	<div class="bg-primary text-primary-foreground max-w-[85%] rounded-2xl rounded-br-md px-4 py-3">
+		<p class="text-sm break-words whitespace-pre-wrap">
 			{message.content_text || (isToolResult ? '[Tool Result]' : '')}
 		</p>
 		{#if message.timestamp}
-			<p class="text-[10px] opacity-60 mt-1">
+			<p class="mt-1 text-[10px] opacity-60">
 				{new Date(message.timestamp).toLocaleTimeString()}
 			</p>
 		{/if}

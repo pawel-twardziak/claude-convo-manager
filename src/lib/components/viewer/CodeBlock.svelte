@@ -11,15 +11,15 @@
 	}
 </script>
 
-<div class="relative group my-2 rounded-md border bg-muted/50 overflow-hidden">
-	<div class="flex items-center justify-between px-3 py-1.5 border-b bg-muted/80">
-		<span class="text-[10px] text-muted-foreground font-mono">{language || 'text'}</span>
+<div class="group bg-muted/50 relative my-2 overflow-hidden rounded-md border">
+	<div class="bg-muted/80 flex items-center justify-between border-b px-3 py-1.5">
+		<span class="text-muted-foreground font-mono text-[10px]">{language || 'text'}</span>
 		<button
 			onclick={handleCopy}
-			class="text-[10px] text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+			class="text-muted-foreground hover:text-foreground cursor-pointer text-[10px] transition-colors"
 		>
 			{copied ? 'Copied!' : 'Copy'}
 		</button>
 	</div>
-	<pre class="p-3 overflow-x-auto text-[13px] leading-relaxed"><code>{code}</code></pre>
+	<pre class="overflow-x-auto p-3 text-[13px] leading-relaxed"><code>{code}</code></pre>
 </div>

@@ -24,12 +24,14 @@ export async function getDashboardStats(): Promise<DashboardStats> {
 	return invoke<DashboardStats>('get_dashboard_stats');
 }
 
-export async function getTokenUsageOverTime(params: {
-	groupBy?: 'day' | 'week' | 'month';
-	dateFrom?: string;
-	dateTo?: string;
-	projectId?: number;
-} = {}): Promise<TokenUsageEntry[]> {
+export async function getTokenUsageOverTime(
+	params: {
+		groupBy?: 'day' | 'week' | 'month';
+		dateFrom?: string;
+		dateTo?: string;
+		projectId?: number;
+	} = {}
+): Promise<TokenUsageEntry[]> {
 	return invoke<TokenUsageEntry[]>('get_token_usage_over_time', { params });
 }
 

@@ -32,25 +32,31 @@
 	});
 </script>
 
-<div class="border rounded-lg bg-muted/30 overflow-hidden text-sm">
+<div class="bg-muted/30 overflow-hidden rounded-lg border text-sm">
 	<button
 		onclick={() => (expanded = !expanded)}
-		class="w-full flex items-center gap-2 px-3 py-2 hover:bg-muted/50 transition-colors text-left cursor-pointer"
+		class="hover:bg-muted/50 flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left transition-colors"
 	>
-		<span class="w-5 h-5 rounded bg-muted flex items-center justify-center text-[10px] font-mono font-bold shrink-0">
+		<span
+			class="bg-muted flex h-5 w-5 shrink-0 items-center justify-center rounded font-mono text-[10px] font-bold"
+		>
 			{icon}
 		</span>
-		<span class="font-medium text-xs">{toolName}</span>
+		<span class="text-xs font-medium">{toolName}</span>
 		{#if inputDisplay}
-			<span class="text-xs text-muted-foreground truncate flex-1">{inputDisplay}</span>
+			<span class="text-muted-foreground flex-1 truncate text-xs">{inputDisplay}</span>
 		{/if}
-		<span class="text-xs text-muted-foreground shrink-0">
+		<span class="text-muted-foreground shrink-0 text-xs">
 			{expanded ? '▼' : '▶'}
 		</span>
 	</button>
 	{#if expanded && block.input}
-		<div class="border-t px-3 py-2 bg-muted/20">
-			<pre class="text-xs overflow-x-auto whitespace-pre-wrap break-all">{JSON.stringify(block.input, null, 2)}</pre>
+		<div class="bg-muted/20 border-t px-3 py-2">
+			<pre class="overflow-x-auto text-xs break-all whitespace-pre-wrap">{JSON.stringify(
+					block.input,
+					null,
+					2
+				)}</pre>
 		</div>
 	{/if}
 </div>
