@@ -12,15 +12,32 @@
 	let editingId = $state<string | null>(null);
 	let editValue = $state('');
 
-	function startRename(s: SessionWithProject, e: MouseEvent) {
-		e.preventDefault();
-		e.stopPropagation();
+	let clickTimer: ReturnType<typeof setTimeout> | undefined;
+
+	function startRename(s: SessionWithProject) {
 		editingId = s.id;
 		editValue = s.custom_title || s.first_prompt || '';
 		setTimeout(() => {
 			const input = document.getElementById(`rename-${s.id}`) as HTMLInputElement;
 			input?.select();
 		}, 0);
+	}
+
+	function handleTitleClick(e: MouseEvent, s: SessionWithProject) {
+		if (e.metaKey || e.ctrlKey || e.shiftKey) return;
+		e.preventDefault();
+		e.stopPropagation();
+		clearTimeout(clickTimer);
+		clickTimer = setTimeout(() => {
+			goto(resolve('/conversations/[sessionId]', { sessionId: s.id }));
+		}, 300);
+	}
+
+	function handleTitleDblClick(e: MouseEvent, s: SessionWithProject) {
+		e.preventDefault();
+		e.stopPropagation();
+		clearTimeout(clickTimer);
+		startRename(s);
 	}
 
 	async function saveRename(s: SessionWithProject) {
@@ -91,31 +108,21 @@
 							class="border-primary w-full border-b-2 bg-transparent px-0 py-0.5 text-sm font-medium outline-none"
 						/>
 					{:else}
-						<div class="flex min-w-0 items-center gap-1">
-							<p class="truncate text-sm font-medium">
-								{s.custom_title || s.first_prompt || s.id}
-							</p>
-							<button
-								onclick={(e) => startRename(s, e)}
-								class="text-muted-foreground hover:text-foreground shrink-0 cursor-pointer opacity-0 transition-opacity group-hover/row:opacity-100"
-								title="Rename"
-							>
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									width="12"
-									height="12"
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="2"
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									><path
-										d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"
-									/><path d="m15 5 4 4" /></svg
-								>
-							</button>
-						</div>
+						<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+						<p
+							class="cursor-pointer truncate text-sm font-medium"
+							onclick={(e) => handleTitleClick(e, s)}
+							ondblclick={(e) => handleTitleDblClick(e, s)}
+							onkeydown={(e) => {
+								if (e.key === 'F2') {
+									e.preventDefault();
+									startRename(s);
+								}
+							}}
+							title="Double-click to rename"
+						>
+							{s.custom_title || s.first_prompt || s.id}
+						</p>
 					{/if}
 					<div class="mt-1 flex items-center gap-2">
 						<span class="text-muted-foreground text-xs">
