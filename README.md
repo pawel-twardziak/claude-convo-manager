@@ -13,7 +13,7 @@ A desktop application for indexing, searching, and analyzing your [Claude Code](
 - **Full-Text Search** - Search across all messages with FTS5 full-text indexing (Porter stemming + Unicode)
 - **Conversation Viewer** - Read conversations with Markdown rendering, syntax-highlighted code blocks, and tool-use display
 - **In-Conversation Search** - Ctrl+F to search within a conversation with highlighted matches, match counter, and prev/next navigation
-- **Inline Rename** - Rename conversations directly from the session list or viewer header
+- **Inline Rename** - Double-click any conversation title to rename it (in the session list or viewer header)
 - **Open in IDE / Terminal** - Auto-detects installed editors (VS Code, Cursor, Zed, JetBrains, etc.) and terminals (Alacritty, Kitty, WezTerm, etc.) and opens the project directory; copies `claude --resume` command to clipboard
 - **Token & Cost Tracking** - Tracks input, output, cache creation, and cache read tokens with estimated API costs
 - **Sync** - Reads and indexes conversations directly from `~/.claude/` into a local SQLite database
