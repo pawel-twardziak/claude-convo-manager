@@ -1,4 +1,5 @@
 pub mod analytics;
+pub mod clone;
 pub mod ide;
 pub mod messages;
 pub mod rename;

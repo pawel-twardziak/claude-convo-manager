@@ -3,6 +3,7 @@
 	import { formatTokens, formatDate } from '$lib/utils';
 	import ResumeButton from '$lib/components/conversations/ResumeButton.svelte';
 	import OpenInButton from '$lib/components/conversations/OpenInButton.svelte';
+	import CloneButton from '$lib/components/conversations/CloneButton.svelte';
 	import InlineRename from '$lib/components/conversations/InlineRename.svelte';
 	import type { SessionWithProject } from '$lib/types/db';
 
@@ -51,6 +52,7 @@
 			</div>
 		</div>
 		<span class="inline-flex gap-1">
+			<CloneButton sessionId={session.id} currentProjectId={session.project_id} />
 			<OpenInButton sessionId={session.id} cwd={session.cwd} projectPath={session.project_path} />
 			<ResumeButton sessionId={session.id} />
 		</span>

@@ -39,6 +39,7 @@ pub fn run() {
             commands::analytics::get_activity_data,
             commands::sync::trigger_sync,
             commands::rename::rename_session,
+            commands::clone::clone_session,
             commands::ide::detect_available_apps,
             commands::ide::open_in_app,
             commands::ide::open_terminal,
