@@ -44,7 +44,9 @@
 		e.stopPropagation();
 		open = false;
 		try {
-			await openTerminal(terminalId, effectivePath);
+			const resumeCmd = `claude --resume ${sessionId}`;
+			await openTerminal(terminalId, effectivePath, resumeCmd);
+			showFeedback('Opened!');
 		} catch (err) {
 			console.error('Failed to open terminal:', err);
 		}

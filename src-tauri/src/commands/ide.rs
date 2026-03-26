@@ -173,7 +173,11 @@ pub fn open_in_app(app_id: String, path: String) -> Result<(), String> {
 }
 
 #[tauri::command]
-pub fn open_terminal(terminal_id: String, path: String) -> Result<(), String> {
+pub fn open_terminal(
+    terminal_id: String,
+    path: String,
+    command: Option<String>,
+) -> Result<(), String> {
     let path_ref = std::path::Path::new(&path);
     if !path_ref.exists() {
         return Err(format!("Path does not exist: {}", path));
@@ -186,30 +190,57 @@ pub fn open_terminal(terminal_id: String, path: String) -> Result<(), String> {
 
     let mut cmd = Command::new(entry.command);
 
+    // Build a shell snippet that cd's into the working directory,
+    // runs the requested command (if any), then drops into an interactive shell.
+    let shell_script = match &command {
+        Some(c) => format!("cd '{}' && {} ; exec bash", path, c),
+        None => format!("cd '{}' && exec bash", path),
+    };
+
     match entry.id {
         "gnome-terminal" => {
-            cmd.arg(format!("--working-directory={}", path));
+            cmd.arg("--").arg("bash").arg("-c").arg(&shell_script);
         }
         "konsole" => {
-            cmd.arg("--workdir").arg(&path);
-        }
-        "alacritty" => {
-            cmd.arg("--working-directory").arg(&path);
-        }
-        "kitty" => {
-            cmd.arg("--directory").arg(&path);
-        }
-        "wezterm" => {
-            cmd.arg("start").arg("--cwd").arg(&path);
-        }
-        "xterm" => {
-            cmd.arg("-e")
+            cmd.arg("--workdir")
+                .arg(&path)
+                .arg("-e")
                 .arg("bash")
                 .arg("-c")
-                .arg(format!("cd '{}' && exec bash", path));
+                .arg(&shell_script);
+        }
+        "alacritty" => {
+            cmd.arg("--working-directory")
+                .arg(&path)
+                .arg("-e")
+                .arg("bash")
+                .arg("-c")
+                .arg(&shell_script);
+        }
+        "kitty" => {
+            cmd.arg("--directory")
+                .arg(&path)
+                .arg("bash")
+                .arg("-c")
+                .arg(&shell_script);
+        }
+        "wezterm" => {
+            cmd.arg("start")
+                .arg("--cwd")
+                .arg(&path)
+                .arg("--")
+                .arg("bash")
+                .arg("-c")
+                .arg(&shell_script);
+        }
+        "xterm" => {
+            cmd.arg("-e").arg("bash").arg("-c").arg(&shell_script);
         }
         "wt" => {
             cmd.arg("-d").arg(&path);
+            if let Some(c) = &command {
+                cmd.arg("cmd").arg("/k").arg(c);
+            }
         }
         _ => {
             return Err(format!(

@@ -15,6 +15,6 @@ export async function openInApp(appId: string, path: string): Promise<void> {
 	return invoke<void>('open_in_app', { appId, path });
 }
 
-export async function openTerminal(terminalId: string, path: string): Promise<void> {
-	return invoke<void>('open_terminal', { terminalId, path });
+export async function openTerminal(terminalId: string, path: string, command?: string): Promise<void> {
+	return invoke<void>('open_terminal', { terminalId, path, command: command ?? null });
 }
