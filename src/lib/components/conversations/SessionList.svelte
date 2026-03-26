@@ -87,7 +87,7 @@
 	function goToPage(p: number) {
 		const params = new SvelteURLSearchParams(page.url.searchParams.toString());
 		params.set('page', p.toString());
-		goto(resolve(`${page.url.pathname}?${params.toString()}`));
+		goto(resolve(`/conversations?${params.toString()}`));
 	}
 </script>
 

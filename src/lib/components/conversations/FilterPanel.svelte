@@ -16,7 +16,7 @@
 			params.delete(key);
 		}
 		params.delete('page');
-		goto(resolve(`${page.url.pathname}?${params.toString()}`), { keepFocus: true, noScroll: true });
+		goto(resolve(`/conversations?${params.toString()}`), { keepFocus: true, noScroll: true });
 	}
 
 	function onSearchInput(e: Event) {
