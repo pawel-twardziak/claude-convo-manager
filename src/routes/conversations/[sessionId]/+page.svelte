@@ -29,7 +29,7 @@
 	}
 
 	onMount(async () => {
-		const sessionId = page.params.sessionId;
+		const sessionId = page.params.sessionId!;
 		try {
 			const [s, m] = await Promise.all([getSession(sessionId), getSessionMessages({ sessionId, limit: 500 })]);
 			if (!s) {
