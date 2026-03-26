@@ -1,6 +1,6 @@
 [package]
 name = "claude-conversations"
-version = "0.6.1"
+version = "0.7.0"
 description = "Claude Conversations Manager - Desktop"
 authors = ["you"]
 license = ""
