@@ -14,7 +14,8 @@ A desktop application for indexing, searching, and analyzing your [Claude Code](
 - **Conversation Viewer** - Read conversations with Markdown rendering, syntax-highlighted code blocks, and tool-use display
 - **In-Conversation Search** - Ctrl+F to search within a conversation with highlighted matches, match counter, and prev/next navigation
 - **Inline Rename** - Double-click any conversation title to rename it (in the session list or viewer header)
-- **Clone to Project** - Clone any conversation into a different project with a new session UUID; copies the full JSONL history, subagent files, metadata, and tags
+- **Project Browser** - Browse all projects with session counts, token usage, cost estimates, model/branch tags, and search/sort; drill into a project to see its conversations with filtering
+- **Clone to Project** - Clone any conversation into a different project with a new session UUID; copies the full JSONL history, subagent files, metadata, and tags; searchable project dropdown
 - **Open in IDE / Terminal** - Auto-detects installed editors (VS Code, Cursor, Zed, JetBrains, etc.) and terminals (Alacritty, Kitty, WezTerm, etc.) and opens the project directory; the terminal launches `claude --resume` to continue the conversation directly
 - **Token & Cost Tracking** - Tracks input, output, cache creation, and cache read tokens with estimated API costs
 - **Sync** - Reads and indexes conversations directly from `~/.claude/` into a local SQLite database
@@ -105,6 +106,7 @@ claude-convo-manager/
 │   │   ├── components/         # UI components
 │   │   │   ├── dashboard/      #   Dashboard stats, charts
 │   │   │   ├── conversations/  #   Session list, filters, rename, open-in
+│   │   │   ├── projects/       #   Project filter panel
 │   │   │   ├── viewer/         #   Message display, markdown
 │   │   │   ├── search/         #   Search form & results
 │   │   │   ├── layout/         #   Sidebar, theme toggle
@@ -114,6 +116,7 @@ claude-convo-manager/
 │   └── routes/                 # File-based routing
 │       ├── +page.svelte        #   Dashboard (home)
 │       ├── conversations/      #   Conversation browser & viewer
+│       ├── projects/           #   Project list & detail pages
 │       └── search/             #   Search page
 ├── src-tauri/                  # Rust backend
 │   ├── src/
@@ -125,6 +128,7 @@ claude-convo-manager/
 │   │   │   ├── analytics.rs    #   Dashboard statistics
 │   │   │   ├── rename.rs       #   Session rename (file + DB)
 │   │   │   ├── clone.rs        #   Clone session to another project
+│   │   │   ├── projects.rs     #   Project listing with stats
 │   │   │   ├── ide.rs          #   IDE/terminal detection & launch
 │   │   │   └── sync.rs         #   Sync trigger
 │   │   ├── sync/               # Sync engine
