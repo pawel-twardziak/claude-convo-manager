@@ -1,5 +1,13 @@
 .PHONY: fmt fmt-svelte fmt-rust lint lint-svelte lint-rust check fix
 
+default: all
+
+# check all
+check: check-svelte
+
+check-svelte:
+	npm run check
+
 # Format all
 fmt: fmt-svelte fmt-rust
 
@@ -19,10 +27,13 @@ lint-rust:
 	cargo clippy --manifest-path src-tauri/Cargo.toml -- -D warnings
 
 # Format + lint all
-check: fmt lint
+verify: fmt lint
 
 # Format + lint with auto-fix
 fix: fmt
 	npm run lint:fix
 	cargo clippy --manifest-path src-tauri/Cargo.toml --fix --allow-dirty -- -D warnings
+
+all: fix lint check
+
 
