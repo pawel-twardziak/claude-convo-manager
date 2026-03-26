@@ -17,6 +17,14 @@
 	let feedback = $state('');
 	let projects = $state<{ id: number; displayName: string; sessionCount: number }[]>([]);
 	let loading = $state(false);
+	let searchQuery = $state('');
+
+	let filteredProjects = $derived(
+		projects
+			.filter((p) => p.id !== currentProjectId)
+			.filter((p) => p.displayName.toLowerCase().includes(searchQuery.toLowerCase()))
+			.sort((a, b) => a.displayName.localeCompare(b.displayName))
+	);
 
 	function showFeedback(msg: string) {
 		feedback = msg;
@@ -58,6 +66,7 @@
 	bind:open
 	onOpenChange={(isOpen) => {
 		if (isOpen) loadProjects();
+		else searchQuery = '';
 	}}
 >
 	<DropdownMenu.Trigger
@@ -101,7 +110,15 @@
 				>
 					Clone to project
 				</DropdownMenu.GroupHeading>
-				{#each projects.filter((p) => p.id !== currentProjectId) as project (project.id)}
+				<input
+					type="text"
+					placeholder="Search projects..."
+					bind:value={searchQuery}
+					onkeydown={(e) => e.stopPropagation()}
+					onpointerdown={(e) => e.stopPropagation()}
+					class="border-input bg-background mx-1 mb-1 h-7 w-[calc(100%-8px)] rounded-sm border px-2 text-xs outline-none"
+				/>
+				{#each filteredProjects as project (project.id)}
 					<DropdownMenu.Item
 						class="hover:bg-accent hover:text-accent-foreground data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground relative flex cursor-pointer items-center rounded-sm px-2 py-1.5 text-xs outline-none select-none"
 						onSelect={(e) => handleClone(project.id, e)}
@@ -124,8 +141,10 @@
 						{project.displayName}
 					</DropdownMenu.Item>
 				{/each}
-				{#if projects.filter((p) => p.id !== currentProjectId).length === 0}
-					<div class="text-muted-foreground px-2 py-2 text-xs">No other projects</div>
+				{#if filteredProjects.length === 0}
+					<div class="text-muted-foreground px-2 py-2 text-xs">
+						{searchQuery ? 'No matching projects' : 'No other projects'}
+					</div>
 				{/if}
 			</DropdownMenu.Group>
 		</DropdownMenu.Content>
