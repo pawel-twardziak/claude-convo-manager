@@ -9,41 +9,35 @@
 	import type { DashboardStats, SessionWithProject } from '$lib/types/db';
 
 	let stats: DashboardStats | null = $state(null);
-	let statsLoading = $state(true);
 	let projects: { name: string | null; sessions: number; tokens: number }[] = $state([]);
-	let projectsLoading = $state(true);
 	let activity: { date: string; count: number }[] = $state([]);
-	let activityLoading = $state(true);
 	let recentSessions: SessionWithProject[] = $state([]);
-	let sessionsLoading = $state(true);
+	let loading = $state(true);
 
-	onMount(() => {
-		getDashboardStats()
-			.then((s) => (stats = s))
-			.catch((e) => console.error('Failed to load stats:', e))
-			.finally(() => (statsLoading = false));
-
-		getProjectBreakdown()
-			.then((p) => (projects = p))
-			.catch((e) => console.error('Failed to load projects:', e))
-			.finally(() => (projectsLoading = false));
-
-		getActivityData()
-			.then((a) => (activity = a))
-			.catch((e) => console.error('Failed to load activity:', e))
-			.finally(() => (activityLoading = false));
-
-		getSessions({ sortBy: 'modified_at', pageSize: 10 })
-			.then((r) => (recentSessions = r.sessions))
-			.catch((e) => console.error('Failed to load sessions:', e))
-			.finally(() => (sessionsLoading = false));
+	onMount(async () => {
+		try {
+			const [s, p, a, r] = await Promise.all([
+				getDashboardStats(),
+				getProjectBreakdown(),
+				getActivityData(),
+				getSessions({ sortBy: 'modified_at', pageSize: 10 })
+			]);
+			stats = s;
+			projects = p;
+			activity = a;
+			recentSessions = r.sessions;
+		} catch (e) {
+			console.error('Failed to load dashboard:', e);
+		} finally {
+			loading = false;
+		}
 	});
 </script>
 
 <div class="w-full space-y-6 p-6">
 	<h2 class="text-xl font-semibold">Dashboard</h2>
 
-	{#if statsLoading}
+	{#if loading}
 		<div class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
 			{#each Array(6) as _, i (i)}
 				<div class="bg-card h-20 animate-pulse rounded-lg border p-4 shadow-sm"></div>
@@ -51,34 +45,10 @@
 		</div>
 	{:else if stats}
 		<StatsCards {stats} />
-	{/if}
-
-	<div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
-		{#if projectsLoading}
-			<div class="bg-card h-[370px] animate-pulse rounded-lg border shadow-sm"></div>
-		{:else}
+		<div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
 			<ProjectChart data={projects} />
-		{/if}
-
-		{#if activityLoading}
-			<div class="bg-card h-[370px] animate-pulse rounded-lg border shadow-sm"></div>
-		{:else}
 			<ActivityChart data={activity} />
-		{/if}
-	</div>
-
-	{#if sessionsLoading}
-		<div class="bg-card rounded-lg border shadow-sm">
-			<div class="p-4 pb-2">
-				<div class="bg-muted h-5 w-48 animate-pulse rounded"></div>
-			</div>
-			<div class="space-y-1 px-4 pb-4">
-				{#each Array(5) as _, i (i)}
-					<div class="bg-muted h-10 animate-pulse rounded-md"></div>
-				{/each}
-			</div>
 		</div>
-	{:else}
 		<RecentSessions sessions={recentSessions} />
 	{/if}
 </div>
