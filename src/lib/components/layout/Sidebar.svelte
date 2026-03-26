@@ -9,9 +9,9 @@
 	import UpdateButton from './UpdateButton.svelte';
 
 	const navItems = [
-		{ href: '/', label: 'Dashboard', icon: '◆' },
-		{ href: '/conversations', label: 'Conversations', icon: '◇' },
-		{ href: '/search', label: 'Search', icon: '⌕' }
+		{ href: '/' as const, label: 'Dashboard', icon: '◆' },
+		{ href: '/conversations' as const, label: 'Conversations', icon: '◇' },
+		{ href: '/search' as const, label: 'Search', icon: '⌕' }
 	];
 
 	let version = $state('');
