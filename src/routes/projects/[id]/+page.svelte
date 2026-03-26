@@ -7,6 +7,7 @@
 	import { getProjects } from '$lib/api/projects';
 	import SessionList from '$lib/components/conversations/SessionList.svelte';
 	import ProjectFilterPanel from '$lib/components/projects/ProjectFilterPanel.svelte';
+	import Breadcrumbs from '$lib/components/layout/Breadcrumbs.svelte';
 	import { formatTokens, formatCost, formatDate, timeAgo } from '$lib/utils';
 	import type { SessionWithProject, FilterOptions, ProjectWithStats } from '$lib/types/db';
 
@@ -67,11 +68,12 @@
 </script>
 
 <div class="w-full space-y-4 p-6">
-	<div class="mb-2">
-		<a href={resolve('/projects')} class="text-muted-foreground hover:text-foreground text-sm transition-colors">
-			&larr; All Projects
-		</a>
-	</div>
+	<Breadcrumbs
+		items={[
+			{ label: 'Projects', href: resolve('/projects') },
+			{ label: project?.displayName || project?.encodedName || 'Project' }
+		]}
+	/>
 
 	{#if project}
 		<div class="bg-card rounded-lg border p-4">

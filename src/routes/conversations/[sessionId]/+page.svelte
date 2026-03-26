@@ -1,11 +1,13 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { getSession } from '$lib/api/sessions';
 	import { getSessionMessages } from '$lib/api/messages';
 	import SessionHeader from '$lib/components/viewer/SessionHeader.svelte';
 	import MessageThread from '$lib/components/viewer/MessageThread.svelte';
 	import ConversationSearch from '$lib/components/viewer/ConversationSearch.svelte';
+	import Breadcrumbs from '$lib/components/layout/Breadcrumbs.svelte';
 	import { openSearch, closeSearch, getIsOpen } from '$lib/stores/conversationSearch.svelte';
 	import type { SessionWithProject, MessageRow } from '$lib/types/db';
 
@@ -56,6 +58,22 @@
 	</div>
 {:else if session}
 	<div class="flex h-full flex-col">
+		<div class="bg-card shrink-0 border-b px-6 pt-3">
+			<Breadcrumbs
+				items={[
+					{ label: 'Conversations', href: resolve('/conversations') },
+					...(session.project_id
+						? [
+								{
+									label: session.project_display_name || 'Project',
+									href: resolve('/projects/[id]', { id: String(session.project_id) })
+								}
+							]
+						: []),
+					{ label: session.custom_title || session.first_prompt || 'Conversation' }
+				]}
+			/>
+		</div>
 		<SessionHeader {session} />
 		<div class="relative flex-1 overflow-hidden">
 			{#if searchOpen}
