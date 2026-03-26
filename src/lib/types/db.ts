@@ -9,6 +9,24 @@ export interface ProjectRow {
 	created_at: string;
 }
 
+export interface ProjectWithStats {
+	id: number;
+	encodedName: string;
+	projectPath: string;
+	displayName: string | null;
+	sessionCount: number;
+	totalTokens: number;
+	lastActivityAt: string | null;
+	createdAt: string | null;
+	totalInputTokens: number;
+	totalOutputTokens: number;
+	totalCacheCreationTokens: number;
+	totalCacheReadTokens: number;
+	estimatedCostUsd: number;
+	distinctModels: string | null;
+	distinctBranches: string | null;
+}
+
 export interface SessionRow {
 	id: string; // UUID
 	project_id: number;

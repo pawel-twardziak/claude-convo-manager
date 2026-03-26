@@ -69,12 +69,14 @@
 		sessions,
 		total,
 		currentPage,
-		pageSize
+		pageSize,
+		onPageChange
 	}: {
 		sessions: SessionWithProject[];
 		total: number;
 		currentPage: number;
 		pageSize: number;
+		onPageChange?: (page: number) => void;
 	} = $props();
 
 	let totalPages = $derived(Math.ceil(total / pageSize));
@@ -85,6 +87,10 @@
 	}
 
 	function goToPage(p: number) {
+		if (onPageChange) {
+			onPageChange(p);
+			return;
+		}
 		const params = new SvelteURLSearchParams(page.url.searchParams.toString());
 		params.set('page', p.toString());
 		goto(resolve(`/conversations?${params.toString()}`));

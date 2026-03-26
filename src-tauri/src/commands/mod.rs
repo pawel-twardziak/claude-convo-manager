@@ -2,6 +2,7 @@ pub mod analytics;
 pub mod clone;
 pub mod ide;
 pub mod messages;
+pub mod projects;
 pub mod rename;
 pub mod search;
 pub mod sessions;

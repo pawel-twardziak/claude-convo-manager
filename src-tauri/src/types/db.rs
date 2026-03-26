@@ -94,6 +94,39 @@ pub struct DashboardStats {
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct ProjectWithStats {
+    pub id: i64,
+    #[serde(rename = "encodedName")]
+    pub encoded_name: String,
+    #[serde(rename = "projectPath")]
+    pub project_path: String,
+    #[serde(rename = "displayName")]
+    pub display_name: Option<String>,
+    #[serde(rename = "sessionCount")]
+    pub session_count: i64,
+    #[serde(rename = "totalTokens")]
+    pub total_tokens: i64,
+    #[serde(rename = "lastActivityAt")]
+    pub last_activity_at: Option<String>,
+    #[serde(rename = "createdAt")]
+    pub created_at: Option<String>,
+    #[serde(rename = "totalInputTokens")]
+    pub total_input_tokens: i64,
+    #[serde(rename = "totalOutputTokens")]
+    pub total_output_tokens: i64,
+    #[serde(rename = "totalCacheCreationTokens")]
+    pub total_cache_creation_tokens: i64,
+    #[serde(rename = "totalCacheReadTokens")]
+    pub total_cache_read_tokens: i64,
+    #[serde(rename = "estimatedCostUsd")]
+    pub estimated_cost_usd: f64,
+    #[serde(rename = "distinctModels")]
+    pub distinct_models: Option<String>,
+    #[serde(rename = "distinctBranches")]
+    pub distinct_branches: Option<String>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct FilterOptionProject {
     pub id: i64,
     #[serde(rename = "displayName")]

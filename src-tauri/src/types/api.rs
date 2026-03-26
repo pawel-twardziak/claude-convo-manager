@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use super::db::{MessageRow, SearchResult, SessionWithProject};
+use super::db::{MessageRow, ProjectWithStats, SearchResult, SessionWithProject};
 
 #[derive(Debug, Deserialize)]
 pub struct GetSessionsParams {
@@ -114,4 +114,25 @@ pub struct SyncProgress {
     pub phase: String,
     pub current: i64,
     pub total: i64,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct GetProjectsParams {
+    pub search: Option<String>,
+    #[serde(rename = "sortBy")]
+    pub sort_by: Option<String>,
+    #[serde(rename = "sortDir")]
+    pub sort_dir: Option<String>,
+    pub page: Option<i64>,
+    #[serde(rename = "pageSize")]
+    pub page_size: Option<i64>,
+}
+
+#[derive(Debug, Serialize)]
+pub struct GetProjectsResponse {
+    pub projects: Vec<ProjectWithStats>,
+    pub total: i64,
+    pub page: i64,
+    #[serde(rename = "pageSize")]
+    pub page_size: i64,
 }

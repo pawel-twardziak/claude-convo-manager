@@ -11,6 +11,7 @@
 	const navItems = [
 		{ href: '/' as const, label: 'Dashboard', icon: '◆' },
 		{ href: '/conversations' as const, label: 'Conversations', icon: '◇' },
+		{ href: '/projects' as const, label: 'Projects', icon: '◈' },
 		{ href: '/search' as const, label: 'Search', icon: '⌕' }
 	];
 

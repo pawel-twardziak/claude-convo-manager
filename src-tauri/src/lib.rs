@@ -37,6 +37,7 @@ pub fn run() {
             commands::analytics::get_token_usage_over_time,
             commands::analytics::get_project_breakdown,
             commands::analytics::get_activity_data,
+            commands::projects::get_projects,
             commands::sync::trigger_sync,
             commands::rename::rename_session,
             commands::clone::clone_session,
