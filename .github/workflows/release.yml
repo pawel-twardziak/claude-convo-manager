@@ -84,7 +84,7 @@ jobs:
           releaseName: '${{ github.ref_name }}'
           releaseBody: 'Build in progress — release notes will be added shortly.'
           releaseDraft: true
-          updater: true
+          includeUpdaterJson: true
           args: ${{ matrix.args }}
 
       - name: Build and release (without code signing)
@@ -99,7 +99,7 @@ jobs:
           releaseName: '${{ github.ref_name }}'
           releaseBody: 'Build in progress — release notes will be added shortly.'
           releaseDraft: true
-          updater: true
+          includeUpdaterJson: true
           args: ${{ matrix.args }}
 
   release-notes:
