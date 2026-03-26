@@ -15,7 +15,7 @@ A desktop application for indexing, searching, and analyzing your [Claude Code](
 - **In-Conversation Search** - Ctrl+F to search within a conversation with highlighted matches, match counter, and prev/next navigation
 - **Inline Rename** - Double-click any conversation title to rename it (in the session list or viewer header)
 - **Clone to Project** - Clone any conversation into a different project with a new session UUID; copies the full JSONL history, subagent files, metadata, and tags
-- **Open in IDE / Terminal** - Auto-detects installed editors (VS Code, Cursor, Zed, JetBrains, etc.) and terminals (Alacritty, Kitty, WezTerm, etc.) and opens the project directory; copies `claude --resume` command to clipboard
+- **Open in IDE / Terminal** - Auto-detects installed editors (VS Code, Cursor, Zed, JetBrains, etc.) and terminals (Alacritty, Kitty, WezTerm, etc.) and opens the project directory; the terminal launches `claude --resume` to continue the conversation directly
 - **Token & Cost Tracking** - Tracks input, output, cache creation, and cache read tokens with estimated API costs
 - **Sync** - Reads and indexes conversations directly from `~/.claude/` into a local SQLite database
 - **Tagging & Favorites** *(planned)* - Organize sessions with custom tags, favorites, and notes
