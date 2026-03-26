@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { page } from '$app/state';
 	import { getSessions, getFilterOptions } from '$lib/api/sessions';
 	import FilterPanel from '$lib/components/conversations/FilterPanel.svelte';
@@ -40,13 +39,12 @@
 		}
 	}
 
-	onMount(() => loadData());
-
-	// Re-fetch when URL params change
+	// Re-fetch when URL params change; skip if navigating away
 	$effect(() => {
-		// Access searchParams to track changes
 		page.url.searchParams.toString();
-		loadData();
+		if (page.url.pathname.startsWith('/conversations')) {
+			loadData();
+		}
 	});
 </script>
 
