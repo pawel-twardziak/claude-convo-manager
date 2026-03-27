@@ -30,12 +30,20 @@ A desktop application for indexing, searching, and analyzing your [Claude Code](
 
 ## Screenshots
 
-![Dashboard](screenshots/ccm-1.png)
-![Conversations](screenshots/ccm-2.png)
-![Conversation Viewer](screenshots/ccm-3.png)
-![Projects](screenshots/ccm-4.png)
-![Project Detail](screenshots/ccm-5.png)
-![Full-Text Search](screenshots/ccm-6.png)
+<table>
+  <tr>
+    <td align="center"><a href="screenshots/ccm-1.png"><img src="screenshots/ccm-1.png" width="400" alt="Dashboard"></a><br><b>Dashboard</b></td>
+    <td align="center"><a href="screenshots/ccm-2.png"><img src="screenshots/ccm-2.png" width="400" alt="Conversations"></a><br><b>Conversations</b></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="screenshots/ccm-3.png"><img src="screenshots/ccm-3.png" width="400" alt="Conversation Viewer"></a><br><b>Conversation Viewer</b></td>
+    <td align="center"><a href="screenshots/ccm-4.png"><img src="screenshots/ccm-4.png" width="400" alt="Projects"></a><br><b>Projects</b></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="screenshots/ccm-5.png"><img src="screenshots/ccm-5.png" width="400" alt="Project Detail"></a><br><b>Project Detail</b></td>
+    <td align="center"><a href="screenshots/ccm-6.png"><img src="screenshots/ccm-6.png" width="400" alt="Full-Text Search"></a><br><b>Full-Text Search</b></td>
+  </tr>
+</table>
 
 ## Prerequisites
 
