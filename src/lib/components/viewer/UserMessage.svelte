@@ -5,7 +5,7 @@
 	let isToolResult = $derived(message.content_json && !message.content_text?.startsWith('[Tool'));
 </script>
 
-<div class="flex justify-end">
+<div class="flex justify-end" data-line-number={message.line_number}>
 	<div class="bg-primary text-primary-foreground max-w-[85%] rounded-2xl rounded-br-md px-4 py-3">
 		<p class="text-sm break-words whitespace-pre-wrap">
 			{message.content_text || (isToolResult ? '[Tool Result]' : '')}

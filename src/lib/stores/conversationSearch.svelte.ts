@@ -2,6 +2,8 @@ let isOpen = $state(false);
 let query = $state('');
 let matches: HTMLElement[] = $state([]);
 let currentIndex = $state(-1);
+let replaceMode = $state(false);
+let isReplacing = $state(false);
 
 function escapeRegex(s: string): string {
 	return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -14,6 +16,8 @@ export function openSearch() {
 export function closeSearch(container?: HTMLElement) {
 	isOpen = false;
 	query = '';
+	replaceMode = false;
+	isReplacing = false;
 	if (container) clearHighlights(container);
 }
 
@@ -37,6 +41,43 @@ export function getMatchLabel(): string {
 	if (!query || query.length < 2) return '';
 	if (matches.length === 0) return 'No matches';
 	return `${currentIndex + 1} of ${matches.length}`;
+}
+
+export function getReplaceMode(): boolean {
+	return replaceMode;
+}
+
+export function setReplaceMode(v: boolean) {
+	replaceMode = v;
+}
+
+export function toggleReplaceMode() {
+	replaceMode = !replaceMode;
+}
+
+export function getIsReplacing(): boolean {
+	return isReplacing;
+}
+
+export function setIsReplacing(v: boolean) {
+	isReplacing = v;
+}
+
+export function getCurrentMatchInfo(): { lineNumber: number; occurrenceIndex: number } | null {
+	if (currentIndex < 0 || currentIndex >= matches.length) return null;
+	const mark = matches[currentIndex];
+	const msgEl = mark.closest('[data-line-number]');
+	if (!msgEl) return null;
+	const lineNumber = parseInt(msgEl.getAttribute('data-line-number')!, 10);
+	if (isNaN(lineNumber)) return null;
+
+	// Count occurrences within this same message that come before currentIndex
+	let occurrenceIndex = 0;
+	for (let i = 0; i < currentIndex; i++) {
+		const otherMsgEl = matches[i].closest('[data-line-number]');
+		if (otherMsgEl === msgEl) occurrenceIndex++;
+	}
+	return { lineNumber, occurrenceIndex };
 }
 
 export function performHighlight(container: HTMLElement, searchQuery: string) {
@@ -92,11 +133,11 @@ export function performHighlight(container: HTMLElement, searchQuery: string) {
 			if (m.index > lastIdx) {
 				frag.appendChild(document.createTextNode(text.slice(lastIdx, m.index)));
 			}
-			const mark = document.createElement('mark');
-			mark.setAttribute('data-search-highlight', '');
-			mark.textContent = text.slice(m.index, m.index + m.length);
-			found.push(mark);
-			frag.appendChild(mark);
+			const markEl = document.createElement('mark');
+			markEl.setAttribute('data-search-highlight', '');
+			markEl.textContent = text.slice(m.index, m.index + m.length);
+			found.push(markEl);
+			frag.appendChild(markEl);
 			lastIdx = m.index + m.length;
 		}
 

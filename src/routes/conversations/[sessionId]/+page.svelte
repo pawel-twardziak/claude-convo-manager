@@ -8,7 +8,7 @@
 	import MessageThread from '$lib/components/viewer/MessageThread.svelte';
 	import ConversationSearch from '$lib/components/viewer/ConversationSearch.svelte';
 	import Breadcrumbs from '$lib/components/layout/Breadcrumbs.svelte';
-	import { openSearch, closeSearch, getIsOpen } from '$lib/stores/conversationSearch.svelte';
+	import { openSearch, closeSearch, getIsOpen, setReplaceMode } from '$lib/stores/conversationSearch.svelte';
 	import type { SessionWithProject, MessageRow } from '$lib/types/db';
 
 	let session: SessionWithProject | null = $state(null);
@@ -24,10 +24,21 @@
 			e.preventDefault();
 			openSearch();
 		}
+		if ((e.ctrlKey || e.metaKey) && e.key === 'h') {
+			e.preventDefault();
+			openSearch();
+			setReplaceMode(true);
+		}
 		if (e.key === 'Escape' && searchOpen) {
 			e.preventDefault();
 			closeSearch(threadContainer);
 		}
+	}
+
+	async function reloadMessages() {
+		const sid = page.params.sessionId!;
+		const m = await getSessionMessages({ sessionId: sid, limit: 500 });
+		messages = m.messages;
 	}
 
 	onMount(async () => {
@@ -77,7 +88,11 @@
 		<SessionHeader {session} />
 		<div class="relative flex-1 overflow-hidden">
 			{#if searchOpen}
-				<ConversationSearch container={threadContainer} />
+				<ConversationSearch
+					container={threadContainer}
+					sessionId={page.params.sessionId!}
+					onReplace={reloadMessages}
+				/>
 			{/if}
 			<div bind:this={threadContainer} class="h-full overflow-auto">
 				<MessageThread {messages} />

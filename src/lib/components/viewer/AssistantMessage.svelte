@@ -35,7 +35,7 @@
 	}
 </script>
 
-<div class="flex justify-start">
+<div class="flex justify-start" data-line-number={message.line_number}>
 	<div class="max-w-[85%] space-y-2">
 		{#if thinkingBlocks.length > 0}
 			<div>
