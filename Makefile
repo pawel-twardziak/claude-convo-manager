@@ -40,6 +40,9 @@ dev:
 build_app:
 	npm run tauri build
 
+release:
+	npm run release
+
 all: fix lint check
 
 
