@@ -4,8 +4,66 @@ use std::io::{BufRead, BufReader, Write};
 use rusqlite::params;
 use tauri::State;
 
+use crate::commands::replace::replace_in_string;
 use crate::db::DbPool;
 use crate::sync::path_encoder::get_projects_dir;
+
+/// Replace the source project path with the target project path in a JSONL value.
+/// Handles: `cwd` field, user message string content, assistant text blocks.
+fn rewrite_project_path(val: &mut serde_json::Value, source_path: &str, target_path: &str) {
+    if let Some(obj) = val.as_object_mut() {
+        // Replace in cwd field
+        if let Some(cwd_val) = obj.get_mut("cwd") {
+            if let Some(s) = cwd_val.as_str() {
+                let (replaced, count) = replace_in_string(s, source_path, target_path, true);
+                if count > 0 {
+                    *cwd_val = serde_json::Value::String(replaced);
+                }
+            }
+        }
+    }
+
+    let msg_type = match val.get("type").and_then(|t| t.as_str()) {
+        Some(t) => t.to_string(),
+        None => return,
+    };
+
+    match msg_type.as_str() {
+        "user" => {
+            if let Some(content) = val.get_mut("message").and_then(|m| m.get_mut("content")) {
+                if let Some(s) = content.as_str() {
+                    let (replaced, count) = replace_in_string(s, source_path, target_path, true);
+                    if count > 0 {
+                        *content = serde_json::Value::String(replaced);
+                    }
+                }
+            }
+        }
+        "assistant" => {
+            if let Some(content_arr) = val
+                .get_mut("message")
+                .and_then(|m| m.get_mut("content"))
+                .and_then(|c| c.as_array_mut())
+            {
+                for block in content_arr.iter_mut() {
+                    let block_type = block.get("type").and_then(|t| t.as_str()).unwrap_or("");
+                    if block_type == "text" {
+                        if let Some(text_val) = block.get_mut("text") {
+                            if let Some(s) = text_val.as_str() {
+                                let (replaced, count) =
+                                    replace_in_string(s, source_path, target_path, true);
+                                if count > 0 {
+                                    *text_val = serde_json::Value::String(replaced);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        _ => {}
+    }
+}
 
 #[tauri::command]
 pub fn clone_session(
@@ -15,23 +73,35 @@ pub fn clone_session(
 ) -> Result<String, String> {
     let conn = pool.get().map_err(|e| e.to_string())?;
 
-    // Look up the source session file path
-    let source_path: String = conn
+    // Look up the source session file path and project_id
+    let (source_path, source_project_id): (String, i64) = conn
         .query_row(
-            "SELECT file_path FROM sessions WHERE id = ?1",
+            "SELECT file_path, project_id FROM sessions WHERE id = ?1",
             params![session_id],
-            |row| row.get(0),
+            |row| Ok((row.get(0)?, row.get(1)?)),
         )
         .map_err(|e| format!("Session not found: {}", e))?;
 
-    // Look up the target project encoded_name
-    let target_encoded: String = conn
+    // Look up the target project encoded_name and path
+    let (target_encoded, target_project_path): (String, String) = conn
         .query_row(
-            "SELECT encoded_name FROM projects WHERE id = ?1",
+            "SELECT encoded_name, project_path FROM projects WHERE id = ?1",
             params![target_project_id],
-            |row| row.get(0),
+            |row| Ok((row.get(0)?, row.get(1)?)),
         )
         .map_err(|e| format!("Target project not found: {}", e))?;
+
+    // Look up the source project path for path rewriting
+    let source_project_path: Option<String> = if source_project_id != target_project_id {
+        conn.query_row(
+            "SELECT project_path FROM projects WHERE id = ?1",
+            params![source_project_id],
+            |row| row.get(0),
+        )
+        .ok()
+    } else {
+        None
+    };
 
     let source = std::path::Path::new(&source_path);
     if !source.exists() {
@@ -51,7 +121,7 @@ pub fn clone_session(
     }
     let target_path = target_dir.join(format!("{}.jsonl", new_session_id));
 
-    // Read source, rewrite sessionId, write to temp file then rename
+    // Read source, rewrite sessionId and project paths, write to temp file then rename
     let tmp_path = target_dir.join(format!(".{}.jsonl.tmp", new_session_id));
     {
         let src_file =
@@ -68,7 +138,7 @@ pub fn clone_session(
                 continue;
             }
 
-            // Try to parse and rewrite sessionId
+            // Try to parse and rewrite sessionId + project paths
             match serde_json::from_str::<serde_json::Value>(trimmed) {
                 Ok(mut val) => {
                     if let Some(obj) = val.as_object_mut() {
@@ -79,6 +149,12 @@ pub fn clone_session(
                             );
                         }
                     }
+
+                    // Replace source project path with target in cwd and message content
+                    if let Some(ref src_path) = source_project_path {
+                        rewrite_project_path(&mut val, src_path, &target_project_path);
+                    }
+
                     let rewritten = serde_json::to_string(&val)
                         .map_err(|e| format!("Failed to serialize: {}", e))?;
                     writeln!(writer, "{}", rewritten)
