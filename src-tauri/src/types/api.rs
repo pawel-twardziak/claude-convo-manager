@@ -136,3 +136,37 @@ pub struct GetProjectsResponse {
     #[serde(rename = "pageSize")]
     pub page_size: i64,
 }
+
+#[derive(Debug, Deserialize)]
+pub struct ReplaceAllParams {
+    #[serde(rename = "sessionId")]
+    pub session_id: String,
+    #[serde(rename = "searchTerm")]
+    pub search_term: String,
+    #[serde(rename = "replaceTerm")]
+    pub replace_term: String,
+    #[serde(rename = "caseSensitive")]
+    pub case_sensitive: Option<bool>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct ReplaceOneParams {
+    #[serde(rename = "sessionId")]
+    pub session_id: String,
+    #[serde(rename = "searchTerm")]
+    pub search_term: String,
+    #[serde(rename = "replaceTerm")]
+    pub replace_term: String,
+    #[serde(rename = "caseSensitive")]
+    pub case_sensitive: Option<bool>,
+    #[serde(rename = "lineNumber")]
+    pub line_number: i64,
+    #[serde(rename = "occurrenceIndex")]
+    pub occurrence_index: usize,
+}
+
+#[derive(Debug, Serialize)]
+pub struct ReplaceResult {
+    #[serde(rename = "replacedCount")]
+    pub replaced_count: usize,
+}

@@ -44,6 +44,9 @@ pub fn run() {
             commands::ide::detect_available_apps,
             commands::ide::open_in_app,
             commands::ide::open_terminal,
+            commands::replace::replace_in_session,
+            commands::replace::replace_one_in_session,
+            commands::delete::delete_session,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
