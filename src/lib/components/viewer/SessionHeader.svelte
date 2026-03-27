@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import { formatTokens, formatDate } from '$lib/utils';
+	import { goto } from '$app/navigation';
 	import ResumeButton from '$lib/components/conversations/ResumeButton.svelte';
 	import OpenInButton from '$lib/components/conversations/OpenInButton.svelte';
 	import CloneButton from '$lib/components/conversations/CloneButton.svelte';
+	import DeleteButton from '$lib/components/conversations/DeleteButton.svelte';
 	import InlineRename from '$lib/components/conversations/InlineRename.svelte';
 	import type { SessionWithProject } from '$lib/types/db';
 
@@ -55,6 +57,7 @@
 			<CloneButton sessionId={session.id} currentProjectId={session.project_id} />
 			<OpenInButton sessionId={session.id} cwd={session.cwd} projectPath={session.project_path} />
 			<ResumeButton sessionId={session.id} />
+			<DeleteButton sessionId={session.id} onDeleted={() => goto(resolve('/conversations'))} />
 		</span>
 	</div>
 </div>

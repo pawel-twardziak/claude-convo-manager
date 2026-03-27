@@ -8,6 +8,7 @@
 	import ResumeButton from './ResumeButton.svelte';
 	import OpenInButton from './OpenInButton.svelte';
 	import CloneButton from './CloneButton.svelte';
+	import DeleteButton from './DeleteButton.svelte';
 	import type { SessionWithProject } from '$lib/types/db';
 
 	let editingId = $state<string | null>(null);
@@ -166,6 +167,14 @@
 					<CloneButton sessionId={s.id} currentProjectId={s.project_id} />
 					<OpenInButton sessionId={s.id} cwd={s.cwd} projectPath={s.project_path} />
 					<ResumeButton sessionId={s.id} />
+					<DeleteButton
+						sessionId={s.id}
+						onDeleted={() => {
+							const idx = sessions.indexOf(s);
+							if (idx >= 0) sessions.splice(idx, 1);
+							total--;
+						}}
+					/>
 				</div>
 			</div>
 		{/each}

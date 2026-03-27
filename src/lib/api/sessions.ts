@@ -40,3 +40,7 @@ export async function renameSession(sessionId: string, newTitle: string): Promis
 export async function cloneSession(sessionId: string, targetProjectId: number): Promise<string> {
 	return invoke<string>('clone_session', { sessionId, targetProjectId });
 }
+
+export async function deleteSession(sessionId: string): Promise<void> {
+	return invoke<void>('delete_session', { sessionId });
+}
