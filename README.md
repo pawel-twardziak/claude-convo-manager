@@ -30,7 +30,12 @@ A desktop application for indexing, searching, and analyzing your [Claude Code](
 
 ## Screenshots
 
-![Dashboard](claude-convo-mngr.png)
+![Dashboard](screenshots/ccm-1.png)
+![Conversations](screenshots/ccm-2.png)
+![Conversation Viewer](screenshots/ccm-3.png)
+![Projects](screenshots/ccm-4.png)
+![Project Detail](screenshots/ccm-5.png)
+![Full-Text Search](screenshots/ccm-6.png)
 
 ## Prerequisites
 
