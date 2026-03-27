@@ -189,6 +189,30 @@ pub fn full_sync(pool: &DbPool, app: &AppHandle) -> Result<(i64, i64), String> {
             .unwrap_or(0.0);
         let file_size = stat.len() as i64;
 
+        // Skip unchanged files to avoid unnecessary FTS trigger churn
+        let stored_mtime: Option<f64> = conn
+            .query_row(
+                "SELECT file_mtime FROM sessions WHERE id = ?1",
+                params![sf.session_id],
+                |row| row.get(0),
+            )
+            .ok()
+            .flatten();
+
+        if let Some(stored) = stored_mtime {
+            if (stored - mtime_ms).abs() < 1.0 {
+                let existing_count: i64 = conn
+                    .query_row(
+                        "SELECT message_count FROM sessions WHERE id = ?1",
+                        params![sf.session_id],
+                        |row| row.get(0),
+                    )
+                    .unwrap_or(0);
+                total_messages += existing_count;
+                continue;
+            }
+        }
+
         let result = match parse_session_file(&sf.file_path) {
             Ok(r) => r,
             Err(e) => {
