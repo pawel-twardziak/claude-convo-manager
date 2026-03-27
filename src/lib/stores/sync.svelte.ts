@@ -2,6 +2,7 @@ import { triggerSync, onSyncProgress } from '$lib/api/sync';
 
 let syncing = $state(false);
 let progress = $state({ phase: '', current: 0, total: 0 });
+let syncVersion = $state(0);
 
 export function isSyncing(): boolean {
 	return syncing;
@@ -9,6 +10,10 @@ export function isSyncing(): boolean {
 
 export function getSyncProgress() {
 	return progress;
+}
+
+export function getSyncVersion(): number {
+	return syncVersion;
 }
 
 export async function startSync(): Promise<{ sessions: number; messages: number }> {
@@ -22,6 +27,7 @@ export async function startSync(): Promise<{ sessions: number; messages: number 
 
 	try {
 		const result = await triggerSync();
+		syncVersion++;
 		return { sessions: result.sessions, messages: result.messages };
 	} finally {
 		syncing = false;

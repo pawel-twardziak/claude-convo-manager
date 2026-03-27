@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { page } from '$app/state';
 	import { searchMessages } from '$lib/api/search';
+	import { getSyncVersion } from '$lib/stores/sync.svelte';
 	import SearchForm from '$lib/components/search/SearchForm.svelte';
 	import SearchResults from '$lib/components/search/SearchResults.svelte';
 	import type { SearchResult } from '$lib/types/db';
@@ -39,6 +40,7 @@
 
 	$effect(() => {
 		page.url.searchParams.get('q');
+		getSyncVersion();
 		doSearch();
 	});
 </script>

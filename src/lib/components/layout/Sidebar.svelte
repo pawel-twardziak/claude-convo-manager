@@ -4,6 +4,7 @@
 	import { page } from '$app/state';
 	import { getVersion } from '@tauri-apps/api/app';
 	import { cn } from '$lib/utils';
+	import { isSyncing } from '$lib/stores/sync.svelte';
 	import SyncButton from './SyncButton.svelte';
 	import ThemeToggle from './ThemeToggle.svelte';
 	import UpdateButton from './UpdateButton.svelte';
@@ -22,7 +23,7 @@
 	});
 </script>
 
-<aside class="bg-card flex h-full w-56 shrink-0 flex-col border-r">
+<aside class="bg-card relative flex h-full w-56 shrink-0 flex-col border-r">
 	<div class="flex items-center gap-2 border-b p-4">
 		<img src="/app-icon.png" alt="App icon" class="h-6 w-6 rounded" />
 		<h1 class="text-sm font-semibold tracking-tight">Claude Conversations</h1>
@@ -52,4 +53,7 @@
 			<ThemeToggle />
 		</span>
 	</div>
+	{#if isSyncing()}
+		<div class="absolute inset-0 z-50 bg-black/40 backdrop-blur-[2px]"></div>
+	{/if}
 </aside>

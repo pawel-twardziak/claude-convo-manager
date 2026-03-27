@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { getDashboardStats, getProjectBreakdown, getActivityData } from '$lib/api/analytics';
 	import { getSessions } from '$lib/api/sessions';
+	import { getSyncVersion } from '$lib/stores/sync.svelte';
 	import StatsCards from '$lib/components/dashboard/StatsCards.svelte';
 	import RecentSessions from '$lib/components/dashboard/RecentSessions.svelte';
 	import ProjectChart from '$lib/components/dashboard/ProjectChart.svelte';
@@ -14,7 +14,8 @@
 	let recentSessions: SessionWithProject[] = $state([]);
 	let loading = $state(true);
 
-	onMount(async () => {
+	async function loadData() {
+		loading = true;
 		try {
 			const [s, p, a, r] = await Promise.all([
 				getDashboardStats(),
@@ -31,6 +32,11 @@
 		} finally {
 			loading = false;
 		}
+	}
+
+	$effect(() => {
+		getSyncVersion();
+		loadData();
 	});
 </script>
 

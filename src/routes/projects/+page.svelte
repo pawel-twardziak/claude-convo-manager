@@ -4,6 +4,7 @@
 	import { page } from '$app/state';
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
 	import { getProjects } from '$lib/api/projects';
+	import { getSyncVersion } from '$lib/stores/sync.svelte';
 	import { formatTokens, formatCost, timeAgo } from '$lib/utils';
 	import type { ProjectWithStats } from '$lib/types/db';
 
@@ -61,6 +62,7 @@
 
 	$effect(() => {
 		page.url.searchParams.toString();
+		getSyncVersion();
 		if (page.url.pathname.startsWith('/projects')) {
 			loadData();
 		}

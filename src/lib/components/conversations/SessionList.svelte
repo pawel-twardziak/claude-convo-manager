@@ -71,13 +71,15 @@
 		total,
 		currentPage,
 		pageSize,
-		onPageChange
+		onPageChange,
+		onSessionDeleted
 	}: {
 		sessions: SessionWithProject[];
 		total: number;
 		currentPage: number;
 		pageSize: number;
 		onPageChange?: (page: number) => void;
+		onSessionDeleted?: () => void;
 	} = $props();
 
 	let totalPages = $derived(Math.ceil(total / pageSize));
@@ -167,14 +169,7 @@
 					<CloneButton sessionId={s.id} currentProjectId={s.project_id} />
 					<OpenInButton sessionId={s.id} cwd={s.cwd} projectPath={s.project_path} />
 					<ResumeButton sessionId={s.id} />
-					<DeleteButton
-						sessionId={s.id}
-						onDeleted={() => {
-							const idx = sessions.indexOf(s);
-							if (idx >= 0) sessions.splice(idx, 1);
-							total--;
-						}}
-					/>
+					<DeleteButton sessionId={s.id} onDeleted={() => onSessionDeleted?.()} />
 				</div>
 			</div>
 		{/each}

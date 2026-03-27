@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { getSessions, getFilterOptions } from '$lib/api/sessions';
+	import { getSyncVersion } from '$lib/stores/sync.svelte';
 	import FilterPanel from '$lib/components/conversations/FilterPanel.svelte';
 	import SessionList from '$lib/components/conversations/SessionList.svelte';
 	import type { SessionWithProject, FilterOptions } from '$lib/types/db';
@@ -24,7 +25,7 @@
 
 			const [sessionsResult, filterOptions] = await Promise.all([
 				getSessions({ projectId, model, search, sortBy, page: pg, pageSize: 30 }),
-				options ? Promise.resolve(options) : getFilterOptions()
+				getFilterOptions()
 			]);
 
 			sessions = sessionsResult.sessions;
@@ -39,9 +40,10 @@
 		}
 	}
 
-	// Re-fetch when URL params change; skip if navigating away
+	// Re-fetch when URL params change or sync completes; skip if navigating away
 	$effect(() => {
 		page.url.searchParams.toString();
+		getSyncVersion();
 		if (page.url.pathname.startsWith('/conversations')) {
 			loadData();
 		}
@@ -62,6 +64,6 @@
 			{/each}
 		</div>
 	{:else}
-		<SessionList {sessions} {total} {currentPage} {pageSize} />
+		<SessionList {sessions} {total} {currentPage} {pageSize} onSessionDeleted={loadData} />
 	{/if}
 </div>

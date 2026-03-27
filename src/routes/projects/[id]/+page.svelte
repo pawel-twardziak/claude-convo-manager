@@ -5,6 +5,7 @@
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
 	import { getSessions, getFilterOptions } from '$lib/api/sessions';
 	import { getProjects } from '$lib/api/projects';
+	import { getSyncVersion } from '$lib/stores/sync.svelte';
 	import SessionList from '$lib/components/conversations/SessionList.svelte';
 	import ProjectFilterPanel from '$lib/components/projects/ProjectFilterPanel.svelte';
 	import Breadcrumbs from '$lib/components/layout/Breadcrumbs.svelte';
@@ -36,9 +37,10 @@
 			const sortBy = params.get('sort') || 'modified_at';
 			const pg = params.get('page') ? Number(params.get('page')) : 1;
 
-			const [sessionsResult, filterOptions] = await Promise.all([
+			const [sessionsResult, filterOptions, allProjects] = await Promise.all([
 				getSessions({ projectId, model, search, sortBy, page: pg, pageSize: 30 }),
-				options ? Promise.resolve(options) : getFilterOptions()
+				getFilterOptions(),
+				getProjects({ pageSize: 1000 })
 			]);
 
 			sessions = sessionsResult.sessions;
@@ -46,11 +48,7 @@
 			currentPage = sessionsResult.page;
 			pageSize = sessionsResult.pageSize;
 			options = filterOptions;
-
-			if (!project) {
-				const allProjects = await getProjects({ pageSize: 1000 });
-				project = allProjects.projects.find((p) => p.id === projectId) ?? null;
-			}
+			project = allProjects.projects.find((p) => p.id === projectId) ?? null;
 		} catch (e) {
 			console.error('Failed to load project data:', e);
 		} finally {
@@ -61,6 +59,7 @@
 	$effect(() => {
 		page.url.searchParams.toString();
 		page.params.id;
+		getSyncVersion();
 		if (page.url.pathname.startsWith('/projects/')) {
 			loadData();
 		}
@@ -159,6 +158,13 @@
 			{/each}
 		</div>
 	{:else}
-		<SessionList {sessions} {total} {currentPage} {pageSize} onPageChange={handlePageChange} />
+		<SessionList
+			{sessions}
+			{total}
+			{currentPage}
+			{pageSize}
+			onPageChange={handlePageChange}
+			onSessionDeleted={loadData}
+		/>
 	{/if}
 </div>

@@ -3,7 +3,7 @@
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { cloneSession, getFilterOptions } from '$lib/api/sessions';
-	import { triggerSync } from '$lib/api/sync';
+	import { startSync } from '$lib/stores/sync.svelte';
 
 	let {
 		sessionId,
@@ -48,7 +48,7 @@
 		loading = true;
 		try {
 			const newSessionId = await cloneSession(sessionId, targetProjectId);
-			await triggerSync();
+			await startSync();
 			showFeedback('Cloned!');
 			setTimeout(() => {
 				goto(resolve('/conversations/[sessionId]', { sessionId: newSessionId }));
