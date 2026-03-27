@@ -34,6 +34,12 @@ fix: fmt
 	npm run lint:fix
 	cargo clippy --manifest-path src-tauri/Cargo.toml --fix --allow-dirty -- -D warnings
 
+dev:
+	npm run tauri dev
+
+build_app:
+	npm run tauri build
+
 all: fix lint check
 
 
