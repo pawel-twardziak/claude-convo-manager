@@ -282,7 +282,7 @@ async function main() {
 
 	// Check tag doesn't already exist
 	try {
-		exec(`git rev-parse ${tag}`);
+		exec(`git rev-parse ${tag} 2>/dev/null`);
 		console.error(`Tag ${tag} already exists`);
 		process.exit(1);
 	} catch {
