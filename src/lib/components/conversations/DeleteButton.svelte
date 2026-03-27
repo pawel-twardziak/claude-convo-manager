@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { AlertDialog } from 'bits-ui';
 	import { deleteSession } from '$lib/api/sessions';
+	import { startSync } from '$lib/stores/sync.svelte';
 	import Trash2 from 'lucide-svelte/icons/trash-2';
 
 	let {
@@ -28,9 +29,11 @@
 			await deleteSession(sessionId);
 			open = false;
 			showFeedback('Deleted!');
-			if (onDeleted) {
-				setTimeout(() => onDeleted(), 300);
-			}
+			startSync().finally(() => {
+				if (onDeleted) {
+					setTimeout(() => onDeleted(), 300);
+				}
+			});
 		} catch (err) {
 			console.error('Failed to delete session:', err);
 			showFeedback('Failed!');
@@ -44,7 +47,6 @@
 	<AlertDialog.Trigger
 		class="text-muted-foreground hover:bg-destructive/10 hover:text-destructive inline-flex h-7 cursor-pointer items-center gap-1 rounded-md px-2 text-[11px]"
 		onclick={(e: MouseEvent) => {
-			e.preventDefault();
 			e.stopPropagation();
 		}}
 	>
