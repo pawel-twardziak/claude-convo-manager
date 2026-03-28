@@ -8,21 +8,23 @@ A desktop application for indexing, searching, and analyzing your [Claude Code](
 
 ## Features
 
-- **Dashboard** - Overview of token usage, project breakdown, activity trends, and recent sessions
-- **Conversation Browser** - Browse and filter sessions by project, git branch, model, date range, and more
-- **Full-Text Search** - Search across all messages with FTS5 full-text indexing (Porter stemming + Unicode)
-- **Conversation Viewer** - Read conversations with Markdown rendering, syntax-highlighted code blocks, and tool-use display
-- **In-Conversation Search & Replace** - Ctrl+F to search within a conversation with highlighted matches, match counter, and prev/next navigation; Ctrl+H to open replace mode for single or bulk text replacement in the source JSONL
-- **Inline Rename** - Double-click any conversation title to rename it (in the session list or viewer header)
-- **Project Browser** - Browse all projects with session counts, token usage, cost estimates, model/branch tags, and search/sort; drill into a project to see its conversations with filtering
-- **Clone to Project** - Clone any conversation into a different project with a new session UUID; copies the full JSONL history, subagent files, metadata, and tags; rewrites project paths in cloned messages; searchable project dropdown
-- **Delete Session** - Delete a conversation with a confirmation dialog; removes the JSONL file, subagent directory, and all database records
-- **Open in IDE / Terminal** - Auto-detects installed editors (VS Code, Cursor, Zed, JetBrains, etc.) and terminals (Alacritty, Kitty, WezTerm, etc.) and opens the project directory; the terminal launches `claude --resume` to continue the conversation directly
-- **Token & Cost Tracking** - Tracks input, output, cache creation, and cache read tokens with estimated API costs
-- **Sync** - Reads and indexes conversations directly from `~/.claude/` into a local SQLite database
-- **Tagging & Favorites** *(planned)* - Organize sessions with custom tags, favorites, and notes
-- **Auto-Update** - Checks for new versions via GitHub Releases with signature verification; downloads, shows progress, and restarts in-place
-- **Dark / Light Theme** - Follows system preference or manual toggle
+| Feature | Description |
+| ------- | ----------- |
+| **Dashboard** | Overview of token usage, project breakdown, activity trends, and recent sessions |
+| **Conversation Browser** | Browse and filter sessions by project, git branch, model, date range, and more |
+| **Full-Text Search** | Search across all messages with FTS5 full-text indexing (Porter stemming + Unicode) |
+| **Conversation Viewer** | Read conversations with Markdown rendering, syntax-highlighted code blocks, and tool-use display |
+| **In-Conversation Search & Replace** | Ctrl+F to search within a conversation with highlighted matches, match counter, and prev/next navigation; Ctrl+H to open replace mode for single or bulk text replacement in the source JSONL |
+| **Inline Rename** | Double-click any conversation title to rename it (in the session list or viewer header) |
+| **Project Browser** | Browse all projects with session counts, token usage, cost estimates, model/branch tags, and search/sort; drill into a project to see its conversations with filtering |
+| **Clone to Project** | Clone any conversation into a different project with a new session UUID; copies the full JSONL history, subagent files, metadata, and tags; rewrites project paths in cloned messages; searchable project dropdown |
+| **Delete Session** | Delete a conversation with a confirmation dialog; removes the JSONL file, subagent directory, and all database records |
+| **Open in IDE / Terminal** | Auto-detects installed editors (VS Code, Cursor, Zed, JetBrains, etc.) and terminals (Alacritty, Kitty, WezTerm, etc.) and opens the project directory; the terminal launches `claude --resume` to continue the conversation directly |
+| **Token & Cost Tracking** | Tracks input, output, cache creation, and cache read tokens with estimated API costs |
+| **Sync** | Reads and indexes conversations directly from `~/.claude/` into a local SQLite database |
+| **Tagging & Favorites** *(planned)* | Organize sessions with custom tags, favorites, and notes |
+| **Auto-Update** | Checks for new versions via GitHub Releases with signature verification; downloads, shows progress, and restarts in-place |
+| **Dark / Light Theme** | Follows system preference or manual toggle |
 
 ## Download
 
