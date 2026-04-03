@@ -19,6 +19,7 @@ A desktop application for indexing, searching, and analyzing your [Claude Code](
 | **Project Browser** | Browse all projects with session counts, token usage, cost estimates, model/branch tags, and search/sort; drill into a project to see its conversations with filtering |
 | **Clone to Project** | Clone any conversation into a different project with a new session UUID; copies the full JSONL history, subagent files, metadata, and tags; rewrites project paths in cloned messages; searchable project dropdown |
 | **Delete Session** | Delete a conversation with a confirmation dialog; removes the JSONL file, subagent directory, and all database records |
+| **Delete Last Message** | Remove the last message from a conversation with a confirmation dialog; atomically rewrites the JSONL file on disk and updates all database counters |
 | **Open in IDE / Terminal** | Auto-detects installed editors (VS Code, Cursor, Zed, JetBrains, etc.) and terminals (Alacritty, Kitty, WezTerm, etc.) and opens the project directory; the terminal launches `claude --resume` to continue the conversation directly |
 | **Token & Cost Tracking** | Tracks input, output, cache creation, and cache read tokens with estimated API costs |
 | **Sync** | Reads and indexes conversations directly from `~/.claude/` into a local SQLite database |
@@ -146,6 +147,7 @@ claude-convo-manager/
 │   │   │   ├── clone.rs        #   Clone session to another project
 │   │   │   ├── replace.rs     #   Search & replace in messages
 │   │   │   ├── delete.rs      #   Session deletion (file + DB)
+│   │   │   ├── delete_message.rs #   Last message deletion (file + DB)
 │   │   │   ├── projects.rs     #   Project listing with stats
 │   │   │   ├── ide.rs          #   IDE/terminal detection & launch
 │   │   │   └── sync.rs         #   Sync trigger
