@@ -335,7 +335,7 @@ fn extract_content_json(val: &serde_json::Value) -> Option<String> {
     }
 }
 
-fn get_file_path(pool: &DbPool, session_id: &str) -> Result<String, String> {
+pub(crate) fn get_file_path(pool: &DbPool, session_id: &str) -> Result<String, String> {
     let conn = pool.get().map_err(|e| e.to_string())?;
     let file_path: String = conn
         .query_row(

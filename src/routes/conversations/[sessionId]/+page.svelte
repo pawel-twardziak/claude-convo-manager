@@ -3,12 +3,13 @@
 	import { page } from '$app/state';
 	import { getSession } from '$lib/api/sessions';
 	import { getSessionMessages } from '$lib/api/messages';
-	import { getSyncVersion } from '$lib/stores/sync.svelte';
+	import { getSyncVersion, startSync } from '$lib/stores/sync.svelte';
 	import SessionHeader from '$lib/components/viewer/SessionHeader.svelte';
 	import MessageThread from '$lib/components/viewer/MessageThread.svelte';
 	import ConversationSearch from '$lib/components/viewer/ConversationSearch.svelte';
 	import Breadcrumbs from '$lib/components/layout/Breadcrumbs.svelte';
 	import { openSearch, closeSearch, getIsOpen, setReplaceMode } from '$lib/stores/conversationSearch.svelte';
+	import { tick } from 'svelte';
 	import type { SessionWithProject, MessageRow } from '$lib/types/db';
 
 	let session: SessionWithProject | null = $state(null);
@@ -18,6 +19,13 @@
 	let threadContainer: HTMLDivElement | undefined = $state();
 
 	let searchOpen = $derived(getIsOpen());
+
+	async function scrollToBottom() {
+		await tick();
+		if (threadContainer) {
+			threadContainer.scrollTop = threadContainer.scrollHeight;
+		}
+	}
 
 	function handleKeydown(e: KeyboardEvent) {
 		if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
@@ -41,6 +49,14 @@
 		messages = m.messages;
 	}
 
+	async function handleMessageDeleted() {
+		await reloadMessages();
+		const s = await getSession(page.params.sessionId!);
+		if (s) session = s;
+		startSync();
+		scrollToBottom();
+	}
+
 	async function loadConversation() {
 		const sessionId = page.params.sessionId!;
 		loading = true;
@@ -52,6 +68,7 @@
 			} else {
 				session = s;
 				messages = m.messages;
+				scrollToBottom();
 			}
 		} catch (e) {
 			error = `Failed to load conversation: ${e}`;
@@ -103,7 +120,7 @@
 				/>
 			{/if}
 			<div bind:this={threadContainer} class="h-full overflow-auto">
-				<MessageThread {messages} />
+				<MessageThread {messages} sessionId={page.params.sessionId!} onMessageDeleted={handleMessageDeleted} />
 			</div>
 		</div>
 	</div>

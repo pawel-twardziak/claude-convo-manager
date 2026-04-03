@@ -170,3 +170,16 @@ pub struct ReplaceResult {
     #[serde(rename = "replacedCount")]
     pub replaced_count: usize,
 }
+
+#[derive(Debug, Deserialize)]
+pub struct DeleteLastMessageParams {
+    #[serde(rename = "sessionId")]
+    pub session_id: String,
+}
+
+#[derive(Debug, Serialize)]
+pub struct DeleteLastMessageResult {
+    pub deleted: bool,
+    #[serde(rename = "deletedMessageId")]
+    pub deleted_message_id: Option<i64>,
+}

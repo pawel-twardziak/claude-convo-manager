@@ -47,6 +47,7 @@ pub fn run() {
             commands::replace::replace_in_session,
             commands::replace::replace_one_in_session,
             commands::delete::delete_session,
+            commands::delete_message::delete_last_message,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

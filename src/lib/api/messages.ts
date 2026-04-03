@@ -41,3 +41,12 @@ export async function replaceInSession(params: ReplaceAllParams): Promise<Replac
 export async function replaceOneInSession(params: ReplaceOneParams): Promise<ReplaceResult> {
 	return invoke<ReplaceResult>('replace_one_in_session', { params });
 }
+
+interface DeleteLastMessageResult {
+	deleted: boolean;
+	deletedMessageId: number | null;
+}
+
+export async function deleteLastMessage(sessionId: string): Promise<DeleteLastMessageResult> {
+	return invoke<DeleteLastMessageResult>('delete_last_message', { params: { sessionId } });
+}
