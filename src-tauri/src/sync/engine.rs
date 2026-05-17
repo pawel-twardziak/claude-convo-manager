@@ -8,7 +8,7 @@ use tauri::{AppHandle, Emitter};
 use crate::db::DbPool;
 use crate::types::api::SyncProgress;
 use crate::types::claude::{
-    ActiveSessionFile, ClaudeHistoryEntry, SessionsIndexFile, SubagentMeta,
+    ActiveSessionFile, ClaudeHistoryEntry, SessionsIndexFile, SubagentJsonlHeader, SubagentMeta,
 };
 
 use super::parsers::{get_primary_model, parse_session_file};
@@ -356,6 +356,9 @@ pub fn full_sync(pool: &DbPool, app: &AppHandle) -> Result<(i64, i64), String> {
     }
 
     // Phase 5: Parse subagents
+    // We iterate over every `agent-*.jsonl`. The sidecar `agent-*.meta.json` is
+    // an enrichment, not a requirement — Claude Code ≤ 2.1.74 didn't write one,
+    // so those subagent files would otherwise be silently dropped.
     emit_progress(app, "Parsing subagents", 0, 1);
     {
         let tx = conn.unchecked_transaction().map_err(|e| e.to_string())?;
@@ -371,43 +374,46 @@ pub fn full_sync(pool: &DbPool, app: &AppHandle) -> Result<(i64, i64), String> {
             if let Ok(entries) = fs::read_dir(&subagents_dir) {
                 for entry in entries.filter_map(Result::ok) {
                     let name = entry.file_name().to_string_lossy().to_string();
-                    if !name.ends_with(".meta.json") {
+                    if !(name.starts_with("agent-") && name.ends_with(".jsonl")) {
                         continue;
                     }
 
                     let agent_id = name
-                        .trim_end_matches(".meta.json")
+                        .trim_end_matches(".jsonl")
                         .trim_start_matches("agent-")
                         .to_string();
-                    let meta_path = entry.path();
-                    let jsonl_path = subagents_dir.join(name.replace(".meta.json", ".jsonl"));
+                    let jsonl_path = entry.path();
+                    let meta_path = subagents_dir.join(format!("agent-{}.meta.json", agent_id));
 
-                    if let Ok(content) = fs::read_to_string(&meta_path) {
-                        if let Ok(meta) = serde_json::from_str::<SubagentMeta>(&content) {
-                            let line_count: i64 = if jsonl_path.exists() {
-                                fs::read_to_string(&jsonl_path)
-                                    .map(|c| {
-                                        c.lines().filter(|l| !l.trim().is_empty()).count() as i64
-                                    })
-                                    .unwrap_or(0)
-                            } else {
-                                0
-                            };
+                    let (agent_type, description) = if meta_path.exists() {
+                        fs::read_to_string(&meta_path)
+                            .ok()
+                            .and_then(|c| serde_json::from_str::<SubagentMeta>(&c).ok())
+                            .map(|m| (m.agent_type, m.description.or(m.slug)))
+                            .unwrap_or((None, None))
+                    } else {
+                        // Fallback for pre-2.1.75 subagents: read the JSONL header
+                        // line and use `slug` (if present) as a friendly description.
+                        let slug = read_subagent_header(&jsonl_path).and_then(|h| h.slug);
+                        (None, slug)
+                    };
 
-                            let _ = tx.execute(
-                                "INSERT OR REPLACE INTO subagents (id, session_id, agent_type, description, file_path, message_count)
-                                 VALUES (?1, ?2, ?3, ?4, ?5, ?6)",
-                                params![
-                                    agent_id,
-                                    sf.session_id,
-                                    meta.agent_type,
-                                    meta.description,
-                                    jsonl_path.to_string_lossy().to_string(),
-                                    line_count,
-                                ],
-                            );
-                        }
-                    }
+                    let line_count: i64 = fs::read_to_string(&jsonl_path)
+                        .map(|c| c.lines().filter(|l| !l.trim().is_empty()).count() as i64)
+                        .unwrap_or(0);
+
+                    let _ = tx.execute(
+                        "INSERT OR REPLACE INTO subagents (id, session_id, agent_type, description, file_path, message_count)
+                         VALUES (?1, ?2, ?3, ?4, ?5, ?6)",
+                        params![
+                            agent_id,
+                            sf.session_id,
+                            agent_type,
+                            description,
+                            jsonl_path.to_string_lossy().to_string(),
+                            line_count,
+                        ],
+                    );
                 }
             }
         }
@@ -471,4 +477,12 @@ pub fn full_sync(pool: &DbPool, app: &AppHandle) -> Result<(i64, i64), String> {
     emit_progress(app, "Done", total_sessions, total_sessions);
 
     Ok((total_sessions, total_messages))
+}
+
+fn read_subagent_header(jsonl_path: &std::path::Path) -> Option<SubagentJsonlHeader> {
+    let file = fs::File::open(jsonl_path).ok()?;
+    let mut reader = BufReader::new(file);
+    let mut line = String::new();
+    reader.read_line(&mut line).ok()?;
+    serde_json::from_str::<SubagentJsonlHeader>(line.trim()).ok()
 }

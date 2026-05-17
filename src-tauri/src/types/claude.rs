@@ -39,6 +39,19 @@ pub struct SubagentMeta {
     #[serde(rename = "agentType")]
     pub agent_type: Option<String>,
     pub description: Option<String>,
+    pub slug: Option<String>,
+}
+
+/// First-line shape of an `agent-*.jsonl` written by older Claude Code
+/// (≤ 2.1.74), used as a fallback when no `.meta.json` sidecar exists.
+#[derive(Debug, Deserialize)]
+#[allow(dead_code)]
+pub struct SubagentJsonlHeader {
+    #[serde(rename = "agentId")]
+    pub agent_id: Option<String>,
+    pub slug: Option<String>,
+    pub version: Option<String>,
+    pub cwd: Option<String>,
 }
 
 // Content block types
