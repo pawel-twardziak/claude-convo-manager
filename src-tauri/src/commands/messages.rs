@@ -37,7 +37,8 @@ pub fn get_session_messages(
         "SELECT id, uuid, session_id, parent_uuid, type, role,
                 is_sidechain, agent_id, model, content_text, content_json,
                 has_tool_use, has_thinking, tool_names,
-                input_tokens, output_tokens, stop_reason, timestamp, line_number
+                input_tokens, output_tokens, stop_reason, timestamp, line_number,
+                source_tool_use_uuid, tool_use_interrupted
          FROM messages {}
          ORDER BY timestamp ASC, line_number ASC
          LIMIT ? OFFSET ?",
@@ -70,6 +71,8 @@ pub fn get_session_messages(
                 stop_reason: row.get(16)?,
                 timestamp: row.get(17)?,
                 line_number: row.get(18)?,
+                source_tool_use_uuid: row.get(19)?,
+                tool_use_interrupted: row.get(20)?,
             })
         })
         .map_err(|e| e.to_string())?

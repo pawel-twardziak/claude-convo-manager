@@ -35,6 +35,7 @@ export interface SessionRow {
 	file_size: number | null;
 	first_prompt: string | null;
 	custom_title: string | null;
+	ai_title: string | null;
 	message_count: number;
 	user_message_count: number;
 	assistant_message_count: number;
@@ -46,6 +47,8 @@ export interface SessionRow {
 	permission_mode: string | null;
 	is_sidechain: number;
 	is_active: number;
+	active_status: string | null;
+	active_updated_at: number | null;
 	total_input_tokens: number;
 	total_output_tokens: number;
 	total_cache_creation_tokens: number;
@@ -81,6 +84,8 @@ export interface MessageRow {
 	stop_reason: string | null;
 	timestamp: string | null;
 	line_number: number | null;
+	source_tool_use_uuid: string | null;
+	tool_use_interrupted: number;
 }
 
 export interface TagRow {

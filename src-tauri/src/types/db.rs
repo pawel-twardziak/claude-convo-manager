@@ -9,6 +9,7 @@ pub struct SessionWithProject {
     pub file_size: Option<i64>,
     pub first_prompt: Option<String>,
     pub custom_title: Option<String>,
+    pub ai_title: Option<String>,
     pub message_count: i64,
     pub user_message_count: i64,
     pub assistant_message_count: i64,
@@ -20,6 +21,8 @@ pub struct SessionWithProject {
     pub permission_mode: Option<String>,
     pub is_sidechain: i64,
     pub is_active: i64,
+    pub active_status: Option<String>,
+    pub active_updated_at: Option<i64>,
     pub total_input_tokens: i64,
     pub total_output_tokens: i64,
     pub total_cache_creation_tokens: i64,
@@ -54,6 +57,8 @@ pub struct MessageRow {
     pub stop_reason: Option<String>,
     pub timestamp: Option<String>,
     pub line_number: Option<i64>,
+    pub source_tool_use_uuid: Option<String>,
+    pub tool_use_interrupted: i64,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]

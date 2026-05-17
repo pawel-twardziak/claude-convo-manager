@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import type { SessionWithProject } from '$lib/types/db';
-	import { timeAgo } from '$lib/utils';
+	import { cleanTitle, timeAgo } from '$lib/utils';
 
 	let { sessions }: { sessions: SessionWithProject[] } = $props();
 
@@ -24,7 +24,7 @@
 				>
 					<div class="min-w-0 flex-1">
 						<p class="truncate text-sm font-medium">
-							{s.custom_title || s.first_prompt || s.id}
+							{s.custom_title || s.ai_title || cleanTitle(s.first_prompt) || s.id}
 						</p>
 						<p class="text-muted-foreground text-xs">
 							{s.project_display_name}

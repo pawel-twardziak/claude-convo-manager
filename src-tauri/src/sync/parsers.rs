@@ -26,12 +26,15 @@ pub struct ParsedMessage {
     pub stop_reason: Option<String>,
     pub timestamp: Option<String>,
     pub line_number: i64,
+    pub source_tool_use_uuid: Option<String>,
+    pub tool_use_interrupted: bool,
 }
 
 #[derive(Debug)]
 pub struct SessionMetadata {
     pub first_prompt: Option<String>,
     pub custom_title: Option<String>,
+    pub ai_title: Option<String>,
     pub models: HashMap<String, i64>,
     pub total_input_tokens: i64,
     pub total_output_tokens: i64,
@@ -143,6 +146,7 @@ pub fn parse_session_file(file_path: &Path) -> Result<SessionParseResult, String
     let mut metadata = SessionMetadata {
         first_prompt: None,
         custom_title: None,
+        ai_title: None,
         models: HashMap::new(),
         total_input_tokens: 0,
         total_output_tokens: 0,
@@ -200,6 +204,15 @@ pub fn parse_session_file(file_path: &Path) -> Result<SessionParseResult, String
                 if let Some(name) = parsed.agent_name {
                     metadata.custom_title = Some(name);
                 }
+            }
+            continue;
+        }
+
+        // Handle ai-title (Claude Code's auto-generated session title).
+        // Records appear multiple times; the latest one wins.
+        if msg_type == "ai-title" {
+            if let Some(title) = parsed.ai_title {
+                metadata.ai_title = Some(title);
             }
             continue;
         }
@@ -275,6 +288,13 @@ pub fn parse_session_file(file_path: &Path) -> Result<SessionParseResult, String
                 None
             };
 
+            let tool_use_interrupted = parsed
+                .tool_use_result
+                .as_ref()
+                .and_then(|v| v.get("interrupted"))
+                .and_then(|b| b.as_bool())
+                .unwrap_or(false);
+
             messages.push(ParsedMessage {
                 uuid: parsed.uuid,
                 parent_uuid: parsed.parent_uuid,
@@ -295,6 +315,8 @@ pub fn parse_session_file(file_path: &Path) -> Result<SessionParseResult, String
                 stop_reason: None,
                 timestamp: parsed.timestamp,
                 line_number,
+                source_tool_use_uuid: parsed.source_tool_assistant_uuid,
+                tool_use_interrupted,
             });
             continue;
         }
@@ -358,6 +380,8 @@ pub fn parse_session_file(file_path: &Path) -> Result<SessionParseResult, String
                 stop_reason: stop_reason.clone(),
                 timestamp: parsed.timestamp.clone(),
                 line_number,
+                source_tool_use_uuid: None,
+                tool_use_interrupted: false,
             };
 
             // Dedup: if we already have a message with same id, replace if this one is final

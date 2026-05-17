@@ -17,13 +17,28 @@ pub struct SessionsIndexFile {
     pub entries: Option<Vec<SessionsIndexEntry>>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 #[allow(dead_code)]
 pub struct SessionsIndexEntry {
     #[serde(rename = "sessionId")]
     pub session_id: String,
     #[serde(rename = "projectPath")]
     pub project_path: Option<String>,
+    #[serde(rename = "fullPath")]
+    pub full_path: Option<String>,
+    #[serde(rename = "fileMtime")]
+    pub file_mtime: Option<i64>,
+    #[serde(rename = "firstPrompt")]
+    pub first_prompt: Option<String>,
+    pub summary: Option<String>,
+    #[serde(rename = "messageCount")]
+    pub message_count: Option<i64>,
+    pub created: Option<String>,
+    pub modified: Option<String>,
+    #[serde(rename = "gitBranch")]
+    pub git_branch: Option<String>,
+    #[serde(rename = "isSidechain")]
+    pub is_sidechain: Option<bool>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -32,6 +47,11 @@ pub struct ActiveSessionFile {
     pub pid: Option<i64>,
     #[serde(rename = "sessionId")]
     pub session_id: Option<String>,
+    pub status: Option<String>,
+    #[serde(rename = "updatedAt")]
+    pub updated_at: Option<i64>,
+    pub kind: Option<String>,
+    pub name: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -134,4 +154,14 @@ pub struct GenericMessage {
     // agent-name
     #[serde(rename = "agentName")]
     pub agent_name: Option<String>,
+
+    // ai-title
+    #[serde(rename = "aiTitle")]
+    pub ai_title: Option<String>,
+
+    // user/tool-result linkage and interruption signal
+    #[serde(rename = "sourceToolAssistantUUID")]
+    pub source_tool_assistant_uuid: Option<String>,
+    #[serde(rename = "toolUseResult")]
+    pub tool_use_result: Option<serde_json::Value>,
 }

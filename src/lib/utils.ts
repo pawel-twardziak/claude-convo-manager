@@ -31,6 +31,26 @@ export function formatCost(n: number): string {
 	return `$${n.toFixed(2)}`;
 }
 
+/**
+ * Strip Claude Code's command-markup wrapper tags from displayed titles.
+ * Removes things like <command-name>, <command-args>, <user_post>,
+ * <local-command-stdout> etc. while keeping their inner text. Returns null
+ * untouched so callers can `||` chain through fallbacks.
+ */
+export function cleanTitle(s: string | null | undefined): string | null {
+	if (s == null) return null;
+	const stripped = s
+		// <command-message>foo</command-message> is a redundant echo of
+		// <command-name>/foo</command-name> — drop the whole block so the title
+		// doesn't read "/clear clear".
+		.replace(/<command-message>[\s\S]*?<\/command-message>/g, ' ')
+		// drop the remaining opening/closing XML-ish tags but keep their text.
+		.replace(/<\/?[a-zA-Z][a-zA-Z0-9_-]*>/g, ' ')
+		.replace(/\s+/g, ' ')
+		.trim();
+	return stripped.length > 0 ? stripped : null;
+}
+
 export function timeAgo(dateStr: string | null): string {
 	if (!dateStr) return '';
 	const now = Date.now();

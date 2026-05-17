@@ -8,7 +8,8 @@ use tauri::{AppHandle, Emitter};
 use crate::db::DbPool;
 use crate::types::api::SyncProgress;
 use crate::types::claude::{
-    ActiveSessionFile, ClaudeHistoryEntry, SessionsIndexFile, SubagentJsonlHeader, SubagentMeta,
+    ActiveSessionFile, ClaudeHistoryEntry, SessionsIndexEntry, SessionsIndexFile,
+    SubagentJsonlHeader, SubagentMeta,
 };
 
 use super::parsers::{get_primary_model, parse_session_file};
@@ -102,29 +103,42 @@ pub fn full_sync(pool: &DbPool, app: &AppHandle) -> Result<(i64, i64), String> {
         tx.commit().map_err(|e| e.to_string())?;
     }
 
-    // Enrich from sessions-index.json
+    // Read sessions-index.json once per project: enrich the project's path AND
+    // build a session-keyed index used as a fallback source for fields the
+    // JSONL parser couldn't extract (e.g. `summary` when `ai-title` is missing).
+    let mut session_index: std::collections::HashMap<String, SessionsIndexEntry> =
+        std::collections::HashMap::new();
     for encoded_name in &project_dirs {
         let index_path = projects_dir.join(encoded_name).join("sessions-index.json");
-        if index_path.exists() {
-            if let Ok(content) = fs::read_to_string(&index_path) {
-                if let Ok(index_data) = serde_json::from_str::<SessionsIndexFile>(&content) {
-                    if let Some(entries) = &index_data.entries {
-                        if let Some(first) = entries.first() {
-                            if let Some(ref real_path) = first.project_path {
-                                let display_name = extract_display_name(real_path);
-                                let _ = conn.execute(
-                                    "INSERT INTO projects (encoded_name, project_path, display_name)
-                                     VALUES (?1, ?2, ?3)
-                                     ON CONFLICT(encoded_name) DO UPDATE SET
-                                       project_path = excluded.project_path,
-                                       display_name = excluded.display_name",
-                                    params![encoded_name, real_path, display_name],
-                                );
-                            }
-                        }
-                    }
-                }
+        if !index_path.exists() {
+            continue;
+        }
+        let Ok(content) = fs::read_to_string(&index_path) else {
+            continue;
+        };
+        let Ok(index_data) = serde_json::from_str::<SessionsIndexFile>(&content) else {
+            continue;
+        };
+        let Some(entries) = index_data.entries else {
+            continue;
+        };
+
+        if let Some(first) = entries.first() {
+            if let Some(ref real_path) = first.project_path {
+                let display_name = extract_display_name(real_path);
+                let _ = conn.execute(
+                    "INSERT INTO projects (encoded_name, project_path, display_name)
+                     VALUES (?1, ?2, ?3)
+                     ON CONFLICT(encoded_name) DO UPDATE SET
+                       project_path = excluded.project_path,
+                       display_name = excluded.display_name",
+                    params![encoded_name, real_path, display_name],
+                );
             }
+        }
+
+        for entry in entries {
+            session_index.insert(entry.session_id.clone(), entry);
         }
     }
 
@@ -213,13 +227,33 @@ pub fn full_sync(pool: &DbPool, app: &AppHandle) -> Result<(i64, i64), String> {
             }
         }
 
-        let result = match parse_session_file(&sf.file_path) {
+        let mut result = match parse_session_file(&sf.file_path) {
             Ok(r) => r,
             Err(e) => {
                 log::error!("Error parsing {}: {}", sf.file_path.display(), e);
                 continue;
             }
         };
+
+        // Backfill from sessions-index.json when the JSONL didn't yield a title
+        // (older CC versions, truncated files). `summary` in the index is the
+        // same thing CC emits later as an `ai-title` record.
+        if let Some(idx) = session_index.get(&sf.session_id) {
+            if result.metadata.ai_title.is_none() {
+                if let Some(ref s) = idx.summary {
+                    if !s.is_empty() {
+                        result.metadata.ai_title = Some(s.clone());
+                    }
+                }
+            }
+            if result.metadata.first_prompt.is_none() {
+                if let Some(ref fp) = idx.first_prompt {
+                    if !fp.is_empty() {
+                        result.metadata.first_prompt = Some(fp.clone());
+                    }
+                }
+            }
+        }
 
         let primary_model = get_primary_model(&result.metadata.models);
         let cost = primary_model
@@ -240,16 +274,17 @@ pub fn full_sync(pool: &DbPool, app: &AppHandle) -> Result<(i64, i64), String> {
             tx.execute(
                 "INSERT INTO sessions (
                     id, project_id, file_path, file_mtime, file_size,
-                    first_prompt, custom_title, message_count,
+                    first_prompt, custom_title, ai_title, message_count,
                     user_message_count, assistant_message_count, tool_use_count,
                     git_branch, cwd, model, version, permission_mode,
                     is_sidechain, total_input_tokens, total_output_tokens,
                     total_cache_creation_tokens, total_cache_read_tokens,
                     estimated_cost_usd, created_at, modified_at
-                ) VALUES (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12,?13,?14,?15,?16,?17,?18,?19,?20,?21,?22,?23,?24)
+                ) VALUES (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12,?13,?14,?15,?16,?17,?18,?19,?20,?21,?22,?23,?24,?25)
                 ON CONFLICT(id) DO UPDATE SET
                     file_mtime=excluded.file_mtime, file_size=excluded.file_size,
                     first_prompt=excluded.first_prompt, custom_title=excluded.custom_title,
+                    ai_title=excluded.ai_title,
                     message_count=excluded.message_count,
                     user_message_count=excluded.user_message_count,
                     assistant_message_count=excluded.assistant_message_count,
@@ -272,6 +307,7 @@ pub fn full_sync(pool: &DbPool, app: &AppHandle) -> Result<(i64, i64), String> {
                     file_size,
                     result.metadata.first_prompt,
                     result.metadata.custom_title,
+                    result.metadata.ai_title,
                     result.messages.len() as i64,
                     result.metadata.user_message_count,
                     result.metadata.assistant_message_count,
@@ -308,8 +344,9 @@ pub fn full_sync(pool: &DbPool, app: &AppHandle) -> Result<(i64, i64), String> {
                     is_sidechain, agent_id, model, content_text, content_json,
                     has_tool_use, has_thinking, tool_names,
                     input_tokens, output_tokens, stop_reason,
-                    timestamp, line_number
-                ) VALUES (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12,?13,?14,?15,?16,?17,?18)",
+                    timestamp, line_number,
+                    source_tool_use_uuid, tool_use_interrupted
+                ) VALUES (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12,?13,?14,?15,?16,?17,?18,?19,?20)",
             )?;
 
             for msg in &result.messages {
@@ -337,6 +374,8 @@ pub fn full_sync(pool: &DbPool, app: &AppHandle) -> Result<(i64, i64), String> {
                     msg.stop_reason,
                     msg.timestamp,
                     msg.line_number,
+                    msg.source_tool_use_uuid,
+                    msg.tool_use_interrupted as i64,
                 ])?;
             }
 
@@ -424,8 +463,11 @@ pub fn full_sync(pool: &DbPool, app: &AppHandle) -> Result<(i64, i64), String> {
     emit_progress(app, "Checking active sessions", 0, 1);
     {
         let tx = conn.unchecked_transaction().map_err(|e| e.to_string())?;
-        tx.execute("UPDATE sessions SET is_active = 0", [])
-            .map_err(|e| e.to_string())?;
+        tx.execute(
+            "UPDATE sessions SET is_active = 0, active_status = NULL, active_updated_at = NULL",
+            [],
+        )
+        .map_err(|e| e.to_string())?;
 
         let sessions_dir = claude_dir.join("sessions");
         if sessions_dir.exists() {
@@ -439,8 +481,12 @@ pub fn full_sync(pool: &DbPool, app: &AppHandle) -> Result<(i64, i64), String> {
                         if let Ok(data) = serde_json::from_str::<ActiveSessionFile>(&content) {
                             if let Some(sid) = data.session_id {
                                 let _ = tx.execute(
-                                    "UPDATE sessions SET is_active = 1 WHERE id = ?1",
-                                    params![sid],
+                                    "UPDATE sessions SET
+                                        is_active = 1,
+                                        active_status = ?2,
+                                        active_updated_at = ?3
+                                     WHERE id = ?1",
+                                    params![sid, data.status, data.updated_at],
                                 );
                             }
                         }

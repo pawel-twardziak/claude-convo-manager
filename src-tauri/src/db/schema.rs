@@ -1,5 +1,9 @@
 use rusqlite::Connection;
 
+/// Bump when adding columns or changing parser output so existing DBs
+/// re-parse all JSONLs (engine fast-path skips files with unchanged mtime).
+const SCHEMA_VERSION: i64 = 4;
+
 pub fn initialize_schema(conn: &Connection) -> rusqlite::Result<()> {
     conn.execute_batch(
         "
@@ -28,6 +32,9 @@ pub fn initialize_schema(conn: &Connection) -> rusqlite::Result<()> {
       file_size INTEGER,
       first_prompt TEXT,
       custom_title TEXT,
+      ai_title TEXT,
+      active_status TEXT,
+      active_updated_at INTEGER,
       message_count INTEGER DEFAULT 0,
       user_message_count INTEGER DEFAULT 0,
       assistant_message_count INTEGER DEFAULT 0,
@@ -73,7 +80,9 @@ pub fn initialize_schema(conn: &Connection) -> rusqlite::Result<()> {
       output_tokens INTEGER DEFAULT 0,
       stop_reason TEXT,
       timestamp TEXT,
-      line_number INTEGER
+      line_number INTEGER,
+      source_tool_use_uuid TEXT,
+      tool_use_interrupted INTEGER DEFAULT 0
     );
     CREATE INDEX IF NOT EXISTS idx_messages_session ON messages(session_id);
     CREATE INDEX IF NOT EXISTS idx_messages_type ON messages(type);
@@ -136,5 +145,63 @@ pub fn initialize_schema(conn: &Connection) -> rusqlite::Result<()> {
       updated_at TEXT DEFAULT (datetime('now'))
     );
     ",
-    )
+    )?;
+
+    run_migrations(conn)?;
+    Ok(())
+}
+
+fn run_migrations(conn: &Connection) -> rusqlite::Result<()> {
+    add_column_if_missing(conn, "sessions", "ai_title", "TEXT")?;
+    add_column_if_missing(conn, "sessions", "active_status", "TEXT")?;
+    add_column_if_missing(conn, "sessions", "active_updated_at", "INTEGER")?;
+    add_column_if_missing(conn, "messages", "source_tool_use_uuid", "TEXT")?;
+    add_column_if_missing(
+        conn,
+        "messages",
+        "tool_use_interrupted",
+        "INTEGER DEFAULT 0",
+    )?;
+
+    let stored: Option<i64> = conn
+        .query_row(
+            "SELECT CAST(value AS INTEGER) FROM sync_state WHERE key = 'schema_version'",
+            [],
+            |row| row.get(0),
+        )
+        .ok();
+
+    if stored.unwrap_or(0) < SCHEMA_VERSION {
+        // Invalidate the engine's mtime fast-path so every session gets
+        // re-parsed against the current parser (picks up newly extracted
+        // fields like ai_title for sessions that haven't changed on disk).
+        conn.execute("UPDATE sessions SET file_mtime = NULL", [])?;
+        conn.execute(
+            "INSERT INTO sync_state (key, value) VALUES ('schema_version', ?1)
+             ON CONFLICT(key) DO UPDATE SET value = excluded.value",
+            rusqlite::params![SCHEMA_VERSION.to_string()],
+        )?;
+    }
+
+    Ok(())
+}
+
+fn add_column_if_missing(
+    conn: &Connection,
+    table: &str,
+    column: &str,
+    ddl_type: &str,
+) -> rusqlite::Result<()> {
+    let mut stmt = conn.prepare(&format!("PRAGMA table_info({})", table))?;
+    let exists = stmt
+        .query_map([], |row| row.get::<_, String>(1))?
+        .filter_map(Result::ok)
+        .any(|name| name == column);
+    if !exists {
+        conn.execute(
+            &format!("ALTER TABLE {} ADD COLUMN {} {}", table, column, ddl_type),
+            [],
+        )?;
+    }
+    Ok(())
 }

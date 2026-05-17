@@ -2,6 +2,7 @@
 	import { resolve } from '$app/paths';
 	import ResumeButton from '$lib/components/conversations/ResumeButton.svelte';
 	import type { SearchResult } from '$lib/types/db';
+	import { cleanTitle } from '$lib/utils';
 
 	let { results }: { results: SearchResult[] } = $props();
 </script>
@@ -13,7 +14,7 @@
 				<a href={resolve('/conversations/[sessionId]', { sessionId: r.session_id })} class="min-w-0 flex-1">
 					<div class="mb-1 flex items-center gap-2">
 						<span class="truncate text-sm font-medium">
-							{r.session_title || r.session_id}
+							{cleanTitle(r.session_title) || r.session_id}
 						</span>
 						<span class="text-muted-foreground shrink-0 text-xs">
 							{r.project_display_name}

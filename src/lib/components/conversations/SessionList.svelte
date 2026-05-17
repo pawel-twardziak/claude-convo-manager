@@ -3,7 +3,7 @@
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
-	import { formatDate, formatTokens } from '$lib/utils';
+	import { cleanTitle, formatDate, formatTokens } from '$lib/utils';
 	import { renameSession } from '$lib/api/sessions';
 	import ResumeButton from './ResumeButton.svelte';
 	import OpenInButton from './OpenInButton.svelte';
@@ -18,7 +18,7 @@
 
 	function startRename(s: SessionWithProject) {
 		editingId = s.id;
-		editValue = s.custom_title || s.first_prompt || '';
+		editValue = s.custom_title || s.ai_title || cleanTitle(s.first_prompt) || '';
 		setTimeout(() => {
 			const input = document.getElementById(`rename-${s.id}`) as HTMLInputElement;
 			input?.select();
@@ -131,7 +131,7 @@
 							}}
 							title="Double-click to rename"
 						>
-							{s.custom_title || s.first_prompt || s.id}
+							{s.custom_title || s.ai_title || cleanTitle(s.first_prompt) || s.id}
 						</p>
 					{/if}
 					<div class="mt-1 flex items-center gap-2">

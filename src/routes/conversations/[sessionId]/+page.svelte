@@ -11,6 +11,7 @@
 	import { openSearch, closeSearch, getIsOpen, setReplaceMode } from '$lib/stores/conversationSearch.svelte';
 	import { tick } from 'svelte';
 	import type { SessionWithProject, MessageRow } from '$lib/types/db';
+	import { cleanTitle } from '$lib/utils';
 
 	let session: SessionWithProject | null = $state(null);
 	let messages: MessageRow[] = $state([]);
@@ -106,7 +107,13 @@
 								}
 							]
 						: []),
-					{ label: session.custom_title || session.first_prompt || 'Conversation' }
+					{
+						label:
+							session.custom_title ||
+							session.ai_title ||
+							cleanTitle(session.first_prompt) ||
+							'Conversation'
+					}
 				]}
 			/>
 		</div>

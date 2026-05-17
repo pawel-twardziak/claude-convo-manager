@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import { formatTokens, formatDate } from '$lib/utils';
+	import { cleanTitle, formatTokens, formatDate } from '$lib/utils';
 	import { goto } from '$app/navigation';
 	import ResumeButton from '$lib/components/conversations/ResumeButton.svelte';
 	import OpenInButton from '$lib/components/conversations/OpenInButton.svelte';
@@ -25,7 +25,7 @@
 				<InlineRename
 					sessionId={session.id}
 					currentTitle={session.custom_title}
-					fallbackTitle={session.first_prompt}
+					fallbackTitle={session.ai_title || cleanTitle(session.first_prompt)}
 					onRenamed={(title) => {
 						session.custom_title = title;
 					}}

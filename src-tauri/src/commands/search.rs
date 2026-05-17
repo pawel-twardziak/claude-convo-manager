@@ -71,7 +71,7 @@ pub fn search_messages(
     let data_sql = format!(
         "SELECT m.id as message_id, m.session_id,
                 p.display_name as project_display_name,
-                COALESCE(s.custom_title, s.first_prompt) as session_title,
+                COALESCE(s.custom_title, s.ai_title, s.first_prompt) as session_title,
                 snippet(messages_fts, 0, '<mark>', '</mark>', '...', 40) as snippet,
                 m.timestamp, rank
          FROM messages_fts
