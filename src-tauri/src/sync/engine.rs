@@ -298,9 +298,12 @@ pub fn full_sync(pool: &DbPool, app: &AppHandle) -> Result<(i64, i64), String> {
                 params![sf.session_id],
             )?;
 
-            // Insert messages
+            // Insert messages. `OR IGNORE` keeps the first occurrence when the
+            // JSONL contains duplicate records with the same (session_id, uuid)
+            // — happens on session resume/replay where CC re-emits earlier
+            // lines verbatim.
             let mut stmt = tx.prepare(
-                "INSERT INTO messages (
+                "INSERT OR IGNORE INTO messages (
                     uuid, session_id, parent_uuid, type, role,
                     is_sidechain, agent_id, model, content_text, content_json,
                     has_tool_use, has_thinking, tool_names,
