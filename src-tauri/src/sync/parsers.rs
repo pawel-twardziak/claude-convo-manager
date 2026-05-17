@@ -74,7 +74,9 @@ fn extract_content_text_from_value(content: &serde_json::Value) -> String {
                         .unwrap_or(false);
                     if let Some(c) = block.get("content").and_then(|c| c.as_str()) {
                         if is_error {
-                            parts.push(format!("[Error: {}]", &c[..c.len().min(200)]));
+                            // Iterate by chars so we don't slice mid-UTF-8 (e.g. Polish 'ć').
+                            let preview: String = c.chars().take(200).collect();
+                            parts.push(format!("[Error: {}]", preview));
                         } else if c.len() < 1000 {
                             parts.push(c.to_string());
                         }
