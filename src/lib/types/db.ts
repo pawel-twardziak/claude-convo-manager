@@ -57,6 +57,8 @@ export interface SessionRow {
 	created_at: string | null;
 	modified_at: string | null;
 	synced_at: string;
+	forked_from_session_id: string | null;
+	forked_at_line_number: number | null;
 }
 
 export interface SessionWithProject extends SessionRow {

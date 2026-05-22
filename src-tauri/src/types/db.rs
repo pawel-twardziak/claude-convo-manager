@@ -31,6 +31,8 @@ pub struct SessionWithProject {
     pub created_at: Option<String>,
     pub modified_at: Option<String>,
     pub synced_at: String,
+    pub forked_from_session_id: Option<String>,
+    pub forked_at_line_number: Option<i64>,
     pub project_path: String,
     pub project_display_name: Option<String>,
 }

@@ -53,7 +53,9 @@ pub fn initialize_schema(conn: &Connection) -> rusqlite::Result<()> {
       estimated_cost_usd REAL DEFAULT 0,
       created_at TEXT,
       modified_at TEXT,
-      synced_at TEXT DEFAULT (datetime('now'))
+      synced_at TEXT DEFAULT (datetime('now')),
+      forked_from_session_id TEXT,
+      forked_at_line_number INTEGER
     );
     CREATE INDEX IF NOT EXISTS idx_sessions_project ON sessions(project_id);
     CREATE INDEX IF NOT EXISTS idx_sessions_created ON sessions(created_at DESC);
@@ -155,6 +157,12 @@ fn run_migrations(conn: &Connection) -> rusqlite::Result<()> {
     add_column_if_missing(conn, "sessions", "ai_title", "TEXT")?;
     add_column_if_missing(conn, "sessions", "active_status", "TEXT")?;
     add_column_if_missing(conn, "sessions", "active_updated_at", "INTEGER")?;
+    add_column_if_missing(conn, "sessions", "forked_from_session_id", "TEXT")?;
+    add_column_if_missing(conn, "sessions", "forked_at_line_number", "INTEGER")?;
+    conn.execute(
+        "CREATE INDEX IF NOT EXISTS idx_sessions_forked_from ON sessions(forked_from_session_id)",
+        [],
+    )?;
     add_column_if_missing(conn, "messages", "source_tool_use_uuid", "TEXT")?;
     add_column_if_missing(
         conn,

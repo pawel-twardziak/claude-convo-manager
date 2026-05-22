@@ -184,3 +184,23 @@ pub struct DeleteMessagesFromLineResult {
     #[serde(rename = "deletedCount")]
     pub deleted_count: i64,
 }
+
+#[derive(Debug, Deserialize)]
+pub struct ForkSessionParams {
+    #[serde(rename = "sessionId")]
+    pub session_id: String,
+    #[serde(rename = "upToLineNumber")]
+    pub up_to_line_number: i64,
+    #[serde(rename = "targetProjectId")]
+    pub target_project_id: Option<i64>,
+}
+
+#[derive(Debug, Serialize)]
+pub struct ForkSessionResult {
+    #[serde(rename = "newSessionId")]
+    pub new_session_id: String,
+    #[serde(rename = "newLineCount")]
+    pub new_line_count: i64,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub warning: Option<String>,
+}

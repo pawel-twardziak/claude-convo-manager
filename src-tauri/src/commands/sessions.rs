@@ -90,6 +90,7 @@ pub fn get_sessions(
                 s.total_input_tokens, s.total_output_tokens,
                 s.total_cache_creation_tokens, s.total_cache_read_tokens,
                 s.estimated_cost_usd, s.created_at, s.modified_at, s.synced_at,
+                s.forked_from_session_id, s.forked_at_line_number,
                 p.project_path, p.display_name as project_display_name
          FROM sessions s
          JOIN projects p ON p.id = s.project_id
@@ -133,8 +134,10 @@ pub fn get_sessions(
                 created_at: row.get(26)?,
                 modified_at: row.get(27)?,
                 synced_at: row.get(28)?,
-                project_path: row.get(29)?,
-                project_display_name: row.get(30)?,
+                forked_from_session_id: row.get(29)?,
+                forked_at_line_number: row.get(30)?,
+                project_path: row.get(31)?,
+                project_display_name: row.get(32)?,
             })
         })
         .map_err(|e| e.to_string())?
@@ -165,6 +168,7 @@ pub fn get_session(
                     s.total_input_tokens, s.total_output_tokens,
                     s.total_cache_creation_tokens, s.total_cache_read_tokens,
                     s.estimated_cost_usd, s.created_at, s.modified_at, s.synced_at,
+                    s.forked_from_session_id, s.forked_at_line_number,
                     p.project_path, p.display_name as project_display_name
              FROM sessions s
              JOIN projects p ON p.id = s.project_id
@@ -201,8 +205,10 @@ pub fn get_session(
                     created_at: row.get(26)?,
                     modified_at: row.get(27)?,
                     synced_at: row.get(28)?,
-                    project_path: row.get(29)?,
-                    project_display_name: row.get(30)?,
+                    forked_from_session_id: row.get(29)?,
+                    forked_at_line_number: row.get(30)?,
+                    project_path: row.get(31)?,
+                    project_display_name: row.get(32)?,
                 })
             },
         )

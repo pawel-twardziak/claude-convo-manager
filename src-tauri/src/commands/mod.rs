@@ -2,6 +2,7 @@ pub mod analytics;
 pub mod clone;
 pub mod delete;
 pub mod delete_message;
+pub mod fork_session;
 pub mod ide;
 pub mod messages;
 pub mod projects;

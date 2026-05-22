@@ -54,3 +54,19 @@ export async function deleteMessagesFromLine(
 		params: { sessionId, fromLineNumber }
 	});
 }
+
+export interface ForkSessionResult {
+	newSessionId: string;
+	newLineCount: number;
+	warning?: string;
+}
+
+export async function forkSessionFromLine(
+	sessionId: string,
+	upToLineNumber: number,
+	targetProjectId?: number
+): Promise<ForkSessionResult> {
+	return invoke<ForkSessionResult>('fork_session_from_line', {
+		params: { sessionId, upToLineNumber, targetProjectId }
+	});
+}

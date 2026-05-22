@@ -127,7 +127,12 @@
 				/>
 			{/if}
 			<div bind:this={threadContainer} class="h-full overflow-auto">
-				<MessageThread {messages} sessionId={page.params.sessionId!} onMessageDeleted={handleMessageDeleted} />
+				<MessageThread
+					{messages}
+					sessionId={page.params.sessionId!}
+					projectId={session.project_id}
+					onMessageDeleted={handleMessageDeleted}
+				/>
 			</div>
 		</div>
 	</div>
