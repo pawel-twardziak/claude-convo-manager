@@ -9,4 +9,5 @@ pub mod rename;
 pub mod replace;
 pub mod search;
 pub mod sessions;
+pub mod shared;
 pub mod sync;
