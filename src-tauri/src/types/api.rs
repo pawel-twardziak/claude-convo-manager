@@ -172,14 +172,15 @@ pub struct ReplaceResult {
 }
 
 #[derive(Debug, Deserialize)]
-pub struct DeleteLastMessageParams {
+pub struct DeleteMessagesFromLineParams {
     #[serde(rename = "sessionId")]
     pub session_id: String,
+    #[serde(rename = "fromLineNumber")]
+    pub from_line_number: i64,
 }
 
 #[derive(Debug, Serialize)]
-pub struct DeleteLastMessageResult {
-    pub deleted: bool,
-    #[serde(rename = "deletedMessageId")]
-    pub deleted_message_id: Option<i64>,
+pub struct DeleteMessagesFromLineResult {
+    #[serde(rename = "deletedCount")]
+    pub deleted_count: i64,
 }

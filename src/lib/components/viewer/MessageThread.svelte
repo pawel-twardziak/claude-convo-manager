@@ -2,7 +2,7 @@
 	import type { MessageRow } from '$lib/types/db';
 	import UserMessage from './UserMessage.svelte';
 	import AssistantMessage from './AssistantMessage.svelte';
-	import DeleteLastMessageButton from './DeleteLastMessageButton.svelte';
+	import DeleteFromHereButton from './DeleteFromHereButton.svelte';
 
 	let {
 		messages,
@@ -17,15 +17,27 @@
 
 <div>
 	<div class="mx-auto max-w-4xl space-y-4 px-6 py-6">
-		{#each messages as msg, i (msg.id)}
-			{#if msg.type === 'user' && msg.role === 'user'}
-				<UserMessage message={msg} />
-			{:else if msg.type === 'assistant'}
-				<AssistantMessage message={msg} />
-			{/if}
-			{#if i === messages.length - 1}
-				<div class="flex justify-end pt-1">
-					<DeleteLastMessageButton {sessionId} onDeleted={onMessageDeleted} />
+		{#each messages as msg (msg.id)}
+			{@const isUser = msg.type === 'user' && msg.role === 'user'}
+			{@const isAssistant = msg.type === 'assistant'}
+			{#if isUser || isAssistant}
+				<div class="group/msg relative">
+					{#if isUser}
+						<UserMessage message={msg} />
+					{:else}
+						<AssistantMessage message={msg} />
+					{/if}
+					{#if msg.line_number != null}
+						<div
+							class="pointer-events-none absolute top-1 right-1 opacity-0 transition-opacity group-hover/msg:opacity-100 focus-within:opacity-100 has-[[data-state=open]]:opacity-100 [&>*]:pointer-events-auto"
+						>
+							<DeleteFromHereButton
+								{sessionId}
+								lineNumber={msg.line_number}
+								onDeleted={onMessageDeleted}
+							/>
+						</div>
+					{/if}
 				</div>
 			{/if}
 		{/each}

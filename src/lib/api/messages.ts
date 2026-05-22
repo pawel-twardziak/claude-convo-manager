@@ -42,11 +42,15 @@ export async function replaceOneInSession(params: ReplaceOneParams): Promise<Rep
 	return invoke<ReplaceResult>('replace_one_in_session', { params });
 }
 
-interface DeleteLastMessageResult {
-	deleted: boolean;
-	deletedMessageId: number | null;
+interface DeleteMessagesFromLineResult {
+	deletedCount: number;
 }
 
-export async function deleteLastMessage(sessionId: string): Promise<DeleteLastMessageResult> {
-	return invoke<DeleteLastMessageResult>('delete_last_message', { params: { sessionId } });
+export async function deleteMessagesFromLine(
+	sessionId: string,
+	fromLineNumber: number
+): Promise<DeleteMessagesFromLineResult> {
+	return invoke<DeleteMessagesFromLineResult>('delete_messages_from_line', {
+		params: { sessionId, fromLineNumber }
+	});
 }
