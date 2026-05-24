@@ -1,5 +1,7 @@
 <script lang="ts">
 	import '../app.css';
+	import githubLight from 'highlight.js/styles/github.css?raw';
+	import githubDark from 'highlight.js/styles/github-dark.css?raw';
 	import { onMount } from 'svelte';
 	import Sidebar from '$lib/components/layout/Sidebar.svelte';
 	import { loadDetectedApps } from '$lib/stores/ide.svelte';
@@ -7,11 +9,24 @@
 
 	let { children } = $props();
 
+	// Syntax-highlight token colors: github (light) by default, github-dark scoped under
+	// `html.dark` so its higher specificity wins in dark mode. Backgrounds/padding are
+	// neutralized so highlighted code inherits the themed `bg-muted` code-block wrapper.
+	const hljsThemes =
+		githubLight +
+		githubDark.replaceAll('.hljs', '.dark .hljs') +
+		'.hljs,.dark .hljs{background:transparent !important;padding:0 !important;}';
+
 	onMount(() => {
 		loadDetectedApps();
 		startSync();
 	});
 </script>
+
+<svelte:head>
+	<!-- eslint-disable-next-line svelte/no-at-html-tags -- static, build-time highlight.js theme CSS -->
+	{@html `<style>${hljsThemes}</style>`}
+</svelte:head>
 
 <Sidebar />
 <main class="relative flex-1 overflow-auto">
